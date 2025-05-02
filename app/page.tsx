@@ -1,10 +1,9 @@
 import { getUsers } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { Button, HStack } from "@chakra-ui/react"
-import { ColorModeButton } from "@/components/ui/color-mode";
 import { MDCTheme, MDCThemesList, themes } from "@/lib/mdc_themes";
 import FormField from "@/components/FormField";
+import SignInBtn from "@/components/GoogleSignInBtn";
 
 
 export default async function Home() {
@@ -28,11 +27,8 @@ export default async function Home() {
           MDC Home page 
           <FormField {...quest} />
         </section>
-        <HStack>
-          <Button>Click me</Button>
-          <Button>Click me</Button>
-        </HStack>
-        <ColorModeButton />
+        <SignInBtn/>
+  
         <div className={`${theme.colors.primary} `}>hola</div>
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">

@@ -1,12 +1,28 @@
 import {MDCFormInterface } from "@/types/form"
-import { Box } from "@chakra-ui/react";
-
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 const MDCForm = (form: MDCFormInterface) => {
   return (
-    <Box>
-      <h1>{form.name}</h1>
-    </Box>
+      <Card>
+        <CardHeader>
+          <CardTitle>{form.name}</CardTitle>
+          <CardDescription>{form.description}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div>Link -&gt; {form.url}</div>
+        </CardContent>
+        <CardFooter>
+          <Button>View </Button>
+        </CardFooter>
+      </Card>
   )
 }
 

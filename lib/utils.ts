@@ -7,6 +7,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+// Get all users
 export const getUsers = async () => {
   const db = new PrismaClient();
   const users = await db.users.findMany();
@@ -14,3 +15,5 @@ export const getUsers = async () => {
   return users
 
 }
+
+//Get all forms for a particular user
