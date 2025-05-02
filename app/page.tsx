@@ -13,6 +13,7 @@ export default async function Home() {
   console.log(theme)
   const quest = {
     id: "",
+    title: "",
     label: "quest 1",
     placeholder: "holalo",
     type: "select",

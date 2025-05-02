@@ -32,15 +32,16 @@ model forms {
 }
 
 model questions {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  form_id     String?   @db.Uuid
+  id          String    @id @db.Uuid
+  form_id     String    @db.Uuid
   label       String
   type        String
-  required    Boolean?  @default(false)
+  required    String    @default(dbgenerated("false"))
   options     String[]
   placeholder String
+  title       String
   answers     answers[]
-  forms       forms?    @relation(fields: [form_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  forms       forms     @relation(fields: [form_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model responses {

@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import { notFound } from 'next/navigation';
+import FormEditor from '@/components/FormEditor';
 
 
 const EditFormPage = async ({params}: {
@@ -27,15 +28,11 @@ const EditFormPage = async ({params}: {
   if (result.status === 404) notFound();
   if  (result.status === 401) redirect("/");
 
-  const data:FormResponse = await result.json();
-  // console.log(data)
+  const formdata:FormResponse = await result.json();
 
   return (
     <main>
-      <section>
-        <div>{id}</div>
-        <div>{JSON.stringify(data)}</div>
-      </section>
+      <FormEditor {...formdata} />
     </main>
   )
 }

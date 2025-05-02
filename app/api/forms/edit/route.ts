@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 // import { v4 as uuidv4 } from 'uuid';
 import { auth } from "@/lib/auth"
 import { PrismaClient} from "@prisma/client";
+import { questionSchema } from "@/zod_schema";
 
 
 // Get a form owned by a signed in user
@@ -91,3 +92,75 @@ export const GET = async (request: NextRequest) => {
     }, {status: 500})
   }
 };
+
+export const PATCH = async (request: NextRequest) => {
+  try {
+    const url = new URL(request.url);
+    const id = url.searchParams.get('id') || "";
+    const formId = url.searchParams.get('form-id') || "";
+  
+    if (!id) {
+     return NextResponse.json({ 
+       error: {
+         message: "Missing formId"
+       }
+     }, { status: 400 });
+    }
+    
+
+    const formEntry = await request.formData();
+    console.log("ogayolooo", id, formEntry)
+    const filledForm = {
+      title: formEntry.get("title") as string || "",
+      label: formEntry.get("label") as string || "",
+      placeholder: formEntry.get("placeholder") as string || "",
+      required: formEntry.get("required") as string || "false",
+      id,
+      form_id: formId
+      // updated at??
+    };
+    // const validatedForm = questionSchema.safeParse(filledForm);
+    
+
+    // if (!validatedForm.success) {
+    //   const formErrors = validatedForm.error.flatten().fieldErrors;
+
+    //   console.log(formErrors, filledForm)
+      
+    //   return NextResponse.json({
+    //     zodErrors: formErrors,
+    //     data: filledForm
+    //   }, { status: 400 })
+    // }
+
+    const db = new PrismaClient();
+
+    const dbResult = await db.questions.update({
+      where: {
+        id: filledForm.id
+      },
+      data: {
+        title: filledForm.title,
+        label: filledForm.label,
+        placeholder: filledForm.placeholder,
+        required: filledForm.required
+      }
+    })
+    console.log("db ------>", dbResult)
+
+    return NextResponse.json({
+      success: {
+        mesage: "successful"
+      },
+      data: "data here....................."
+    }, {status: 201})
+
+  } catch (error) {
+    console.error(error)
+    return NextResponse.json({
+      error: {
+        message: "Unable to get forms. Please check back later."
+      }
+    }, {status: 500})
+  }
+}

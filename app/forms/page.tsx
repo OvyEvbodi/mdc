@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { FormResponse, MDCFormInterface } from "@/types/form";
+import { FormListResponse, MDCFormInterface } from "@/types/form";
 import { auth } from "@/lib/auth"
 import MDCForm from "@/components/Form";
 import { redirect } from "next/navigation";
@@ -28,7 +28,7 @@ const FormsPage = async() => {
   });
   if (result.status !== 200) redirect("/");
 
-  const data:FormResponse = await result.json();
+  const data:FormListResponse = await result.json();
   console.log(data)
   
 
