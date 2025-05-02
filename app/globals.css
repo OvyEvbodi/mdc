@@ -159,13 +159,13 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --card: oklch(0.21 0.034 264.665);
-    --card-foreground: oklch(0.985 0.002 247.839);
+    --card: #fff;
+    --card-foreground: #393838;
     --popover: oklch(0.21 0.034 264.665);
     --popover-foreground: oklch(0.985 0.002 247.839);
-    --primary: #19b011;
+    --primary: #6013b2;
     --primary-foreground: #ddd;
-    --secondary: #1ac97d;
+    --secondary: #c91a83;
     --secondary-foreground: #ae89ea;
     --muted: oklch(0.278 0.033 256.848);
     --muted-foreground: oklch(0.707 0.022 261.325);
@@ -203,7 +203,7 @@
   }
 
   .dark {
-    --background: #1e1d1d;
+    --background: #af4545;
     --foreground: #f9f3f3;
     --card: oklch(0.21 0.034 264.665);
     --card-foreground: oklch(0.985 0.002 247.839);

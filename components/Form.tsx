@@ -8,19 +8,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import Link from "next/link"
 
 const MDCForm = (form: MDCFormInterface) => {
   return (
-      <Card>
+      <Card className="">
         <CardHeader>
           <CardTitle>{form.name}</CardTitle>
           <CardDescription>{form.description}</CardDescription>
         </CardHeader>
         <CardContent>
           <div>Link -&gt; {form.url}</div>
+          <p>{JSON.stringify(form.questions)}</p>
         </CardContent>
         <CardFooter>
-          <Button>View </Button>
+          <Link href={`/forms/edit/${form.id}`}>
+            <Button className="w-full">View </Button>
+          </Link>
         </CardFooter>
       </Card>
   )

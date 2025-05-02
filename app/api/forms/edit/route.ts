@@ -1,11 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 // import { v4 as uuidv4 } from 'uuid';
 import { auth } from "@/lib/auth"
-import { PrismaClient, users as User } from "@prisma/client";
+import { PrismaClient} from "@prisma/client";
 
 
-// Get all forms owned by a signed in user
+// Get a form owned by a signed in user
 export const GET = async (request: NextRequest) => {
+
+  const url = new URL(request.url);
+  const id = url.searchParams.get('id') || "";
+  
+  if (!id) {
+    return NextResponse.json({ 
+      error: {
+        message: "Missing formId"
+      }
+    }, { status: 400 });
+  }
 
   // Validate auth 
   const session = await auth();
@@ -36,28 +47,39 @@ export const GET = async (request: NextRequest) => {
         }
       }, {status: 401})
     }
-    const formsList = await db.forms.findMany({
+    const formResult = await db.forms.findFirst({
       where: {
-        user_id: user.id
+        user_id: user.id,
+        id: id
       }
     })
-    const forms = await Promise.all(formsList.map(async(form) => {
-      const questions = await db.questions.findMany({
+
+    if (!formResult) {
+      return NextResponse.json({
+        error: {
+          mesage: "Form not found"
+        }
+      }, {status: 404})
+
+    }
+    const questions = await db.questions.findMany({
         where: {
-          form_id: form.id
+          form_id: formResult.id
         }
       })
 
-      return {...form, questions}
+    const form = {
+      ...formResult,
+      questions
+    }
 
-    }))
-    console.log(forms)
+    console.log(form)
 
     return NextResponse.json({
       success: {
         mesage: "successful"
       },
-      data: {forms, user}
+      data: {form, user}
     }, {status: 200})
   }
   catch (error) {

@@ -14,6 +14,7 @@ export default async function Home() {
   const quest = {
     id: "",
     label: "quest 1",
+    placeholder: "holalo",
     type: "select",
     form_id: "",
     required: false,

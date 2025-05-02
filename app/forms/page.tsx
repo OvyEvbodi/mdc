@@ -1,11 +1,10 @@
 import { Metadata } from "next";
-import { MDCFormInterface } from "@/types/form";
+import { FormResponse, MDCFormInterface } from "@/types/form";
 import { auth } from "@/lib/auth"
 import MDCForm from "@/components/Form";
 import { redirect } from "next/navigation";
 // import { Button } from "@/components/ui/button";
 import { cookies } from "next/headers";
-import { MDCUserInterface } from "@/types/user";
 
 
 export const metadata: Metadata = {
@@ -13,13 +12,6 @@ export const metadata: Metadata = {
   description: "All forms appear here",
 };
 
-interface FormResponse extends Response {
-  data: {
-    forms: MDCFormInterface[],
-    user: MDCUserInterface
-  };
-  sucess: string;
-}
 
 const FormsPage = async() => {
 
@@ -44,15 +36,17 @@ const FormsPage = async() => {
 
   
   return (
-    <main className="p-8 md:pt-12">
+    <main className="p-8 md:pt-12 max-w-6xl flex flex-col justify-center items-center">
     
           <h1 className="bg-blue-400">Forms page</h1>
-         
+          <section className="flex flex-wrap gap-4 md:gap-8">
             {
               forms && forms.map(form => (
                 <MDCForm key={form.id} {...form} />
               ))
             }
+          </section>
+            
             <p>{session && JSON.stringify(session.user)}</p>
     </main>
   )
