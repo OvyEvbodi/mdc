@@ -3,23 +3,37 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button, HStack } from "@chakra-ui/react"
 import { ColorModeButton } from "@/components/ui/color-mode";
+import { MDCTheme, MDCThemesList, themes } from "@/lib/mdc_themes";
+import FormField from "@/components/FormField";
 
 
 export default async function Home() {
   const users = await getUsers()
+  const userColor: string = users[0].name.split(" ")[0] || "default"; // add settings to 
+  const theme: MDCTheme = themes[userColor as keyof MDCThemesList] ?? themes.default;
+  console.log(theme)
+  const quest = {
+    id: "",
+    label: "quest 1",
+    type: "select",
+    form_id: "",
+    required: false,
+    options: ["hi"]
+}
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-roboto)]">
       <main className=" flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
         <section>
           {users && JSON.stringify(users)}
           MDC Home page 
+          <FormField {...quest} />
         </section>
         <HStack>
           <Button>Click me</Button>
           <Button>Click me</Button>
         </HStack>
-        <ColorModeButton ></ColorModeButton>
-
+        <ColorModeButton />
+        <div className={`${theme.colors.primary} `}>hola</div>
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <Link
