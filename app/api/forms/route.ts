@@ -10,7 +10,6 @@ export const GET = async (request: NextRequest) => {
   // Validate auth 
   const session = await auth();
 
-  console.log(session)
   if (!session) {
     return NextResponse.json({
       error: {
@@ -51,7 +50,6 @@ export const GET = async (request: NextRequest) => {
       return {...form, questions}
 
     }))
-    console.log(forms)
 
     return NextResponse.json({
       success: {

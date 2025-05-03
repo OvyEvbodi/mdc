@@ -11,9 +11,7 @@ export function cn(...inputs: ClassValue[]) {
 export const getUsers = async () => {
   const db = new PrismaClient();
   const users = await db.users.findMany();
-  console.log(users)
   return users
-
 }
 
 //Get all forms for a particular user

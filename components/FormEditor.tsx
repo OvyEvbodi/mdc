@@ -1,3 +1,5 @@
+"use client"
+
 import { FormResponse } from '@/types/form';
 import { Button } from "@/components/ui/button";
 import {
@@ -14,9 +16,23 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { MDCFormEditField } from '@/components/FormField';
+import { Reorder } from 'framer-motion';
+import { useState } from 'react';
+import { Plus } from 'lucide-react';
 
 
 const FormEditor = (formdata:FormResponse ) => {
+  const [ questionsList, setQuestionsList] = useState(formdata.data.form.questions);
+  const [ newQuestionsList, setNewQuestionsList ] = useState([]);
+  const questionTypes = ["input", "radio", "select", "checkbox"];
+  const questionInitialData = {
+    
+  };
+
+  const handleAddQuestionField = () => {
+    //
+  };
+
   return (
     <div>
       <section className=''>
@@ -25,8 +41,15 @@ const FormEditor = (formdata:FormResponse ) => {
         className="min-h-screen rounded-lg border md:min-w-[450px]"
       >
         <ResizablePanel defaultSize={25} className='bg-secondary text-secondary-foreground'>
-          <div className="flex h-full items-center justify-center p-6">
-            <span className="font-semibold">Sidebar</span>
+          <div className="flex flex-col h-full items-center justify-baseline p-6">
+            <div className="font-semibold">Fields</div>
+            <div>
+              {questionTypes.map((type, index) => (
+                <div key={index} className='p-2 cu'>
+                  <Button onClick={handleAddQuestionField} className='cursor-pointer bg-transparent'>Add {type} field <Plus /></Button>
+                </div>
+              ))}
+            </div>
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
@@ -39,14 +62,23 @@ const FormEditor = (formdata:FormResponse ) => {
         </CardHeader>
         <CardContent>
           <div>Link -&gt; {formdata.data.form.name}</div>
+          <div className='space-y-4'>
+          <Reorder.Group values={questionsList} onReorder={setQuestionsList} >
           {
             formdata.data.form.questions.map((question, index) => (
-              <MDCFormEditField key={index} {...question} />
+              <Reorder.Item value={question} key={index}>
+                <div className='p-4 m-4' >
+                  <MDCFormEditField {...question} />
+                </div>
+              </Reorder.Item>
             ))
           }
+          </Reorder.Group>
+          </div>
+          
         </CardContent>
         <CardFooter>
-            <Button className="w-full">Save </Button>
+            <Button className="w-full">Publish Changes </Button>
         </CardFooter>
       </Card>
           </div>

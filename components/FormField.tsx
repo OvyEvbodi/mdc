@@ -15,6 +15,18 @@ import { MDCQuestionChoice, MDCQuestionChoiceResponse } from "@/types/form"
 import { Button } from "@/components/ui/button";
 import { useActionState, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Pencil, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 
 // Individual form fields
@@ -77,11 +89,25 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
   };
 
   const [ editMode, setEditMode ] = useState(false);
+  const [ showAlert, setShowAlert ] = useState(false);
+
   const router = useRouter();
 
+  const handleDeleteQuestion = async () => {
+    console.log("handler block---------------")
+    // show popup to confirm first
+    setShowAlert(true)
+    const result = await fetch(`/api/forms/edit?form-id=${props.form_id}&id=${props.id}&action=delete-question`, {
+      method: "DELETE",
+    })
+    console.log("fetch ran")
+    if (result.status === 200)
+      router.refresh();
+    // else set error or sth
+  };
+
   const handleQuestionEdit: (prevState: MDCQuestionChoiceResponse, formData: FormData) => Promise<MDCQuestionChoiceResponse> = async (prevState: MDCQuestionChoiceResponse, formData: FormData) => {
-    const id = formData.get("question_id");
-    const result = await fetch(`/api/forms/edit?form-id=${props.form_id}&id=${id}`, {
+    const result = await fetch(`/api/forms/edit?form-id=${props.form_id}&id=${props.id}`, {
       method: "PATCH",
       body: formData
     })
@@ -139,12 +165,31 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
           ) : 
           (
             <div className="border boder-primary p-3 rounded-sm shadow inset-shadow-md">
-              <Button onClick={()=> setEditMode(true)} className="cursor-pointer">Edit</Button>
+              <div className="flex justify-between">
+                <Button onClick={()=> setEditMode(true)} className="cursor-pointer"><Pencil /></Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                      <Button variant={"destructive"} className="cursor-pointer"><Trash2 /></Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete {props.title}?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete the question and its response data from our servers.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={handleDeleteQuestion} >Continue</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+              </div>
               <div>
-              <div>Title: {props.title}</div>
-              <div>Label:</div>
-              <div>Required:</div>
-              <div>Placeholder:</div>
+                <div><span className="font-bold">Title: </span>{props.title}</div>
+                <div><span className="font-bold">Label: </span>{props.label}</div>
+                <div><span className="font-bold">Required: </span>{props.required}</div>
+                <div><span className="font-bold">Placeholder: </span>{props.placeholder}</div>
               </div>
             </div>
           )

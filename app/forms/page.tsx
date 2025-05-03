@@ -29,7 +29,6 @@ const FormsPage = async() => {
   if (result.status !== 200) redirect("/");
 
   const data:FormListResponse = await result.json();
-  console.log(data)
   
 
   const forms: MDCFormInterface[] | null = data ? data.data.forms : null;
