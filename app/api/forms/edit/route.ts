@@ -96,8 +96,9 @@ export const PATCH = async (request: NextRequest) => {
     const url = new URL(request.url);
     const id = url.searchParams.get('id') || "";
     const formId = url.searchParams.get('form-id') || "";
+    const action = url.searchParams.get('action') || "";
   
-    if (!id) {
+    if (!formId && !id) {
      return NextResponse.json({ 
        error: {
          message: "Missing formId"
@@ -108,43 +109,96 @@ export const PATCH = async (request: NextRequest) => {
 
     const formEntry = await request.formData();
     console.log("ogayolooo", id, formEntry)
-    const filledForm = {
-      title: formEntry.get("title") as string || "",
-      label: formEntry.get("label") as string || "",
-      placeholder: formEntry.get("placeholder") as string || "",
-      required: formEntry.get("required") as string || "false",
-      id,
-      form_id: formId
-      // updated at??
-    };
-    // const validatedForm = questionSchema.safeParse(filledForm);
     
 
-    // if (!validatedForm.success) {
-    //   const formErrors = validatedForm.error.flatten().fieldErrors;
-
-    //   console.log(formErrors, filledForm)
-      
-    //   return NextResponse.json({
-    //     zodErrors: formErrors,
-    //     data: filledForm
-    //   }, { status: 400 })
-    // }
-
     const db = new PrismaClient();
-
-    const dbResult = await db.questions.update({
-      where: {
-        id: filledForm.id
-      },
-      data: {
-        title: filledForm.title,
-        label: filledForm.label,
-        placeholder: filledForm.placeholder,
-        required: filledForm.required
+    if (action === "update-question") {
+      const filledForm = {
+        title: formEntry.get("title") as string || "",
+        label: formEntry.get("label") as string || "",
+        placeholder: formEntry.get("placeholder") as string || "",
+        required: formEntry.get("required") as string || "false",
+        id,
+        form_id: formId
+        // updated at??
+      };
+      // const validatedForm = questionSchema.safeParse(filledForm);
+      
+  
+      // if (!validatedForm.success) {
+      //   const formErrors = validatedForm.error.flatten().fieldErrors;
+  
+      //   console.log(formErrors, filledForm)
+        
+      //   return NextResponse.json({
+      //     zodErrors: formErrors,
+      //     data: filledForm
+      //   }, { status: 400 })
+      // }
+      const dbResponse = await db.questions.update({
+        where: {
+          id: filledForm.id
+        },
+        data: {
+          title: filledForm.title,
+          label: filledForm.label,
+          placeholder: filledForm.placeholder,
+          required: filledForm.required
+        }
+      })
+      if (!dbResponse) {
+        return NextResponse.json({
+          error: {
+            message: "Unable to edit question. Please try again."
+          }
+        }, {status: 500})
       }
-    })
-    console.log("db ------>", dbResult)
+      console.log("db patch------>", dbResponse)
+    } else if (action === "update-form") {
+      const strPublished = formEntry.get("published") as string || "";
+      const filledForm = {
+        name: formEntry.get("name") as string || "",
+        description: formEntry.get("description") as string || "",
+        url: formEntry.get("url") as string || "",
+        published: strPublished === "true",
+        id: formId
+        // updated at??
+      };
+      // const validatedForm = questionSchema.safeParse(filledForm);
+      
+  
+      // if (!validatedForm.success) {
+      //   const formErrors = validatedForm.error.flatten().fieldErrors;
+  
+      //   console.log(formErrors, filledForm)
+        
+      //   return NextResponse.json({
+      //     zodErrors: formErrors,
+      //     data: filledForm
+      //   }, { status: 400 })
+      // }
+      console.log(filledForm.published)
+      const dbResponse = await db.forms.update({
+        where: {
+          id: filledForm.id
+        },
+        data: {
+          name: filledForm.name,
+          description: filledForm.description,
+          published: filledForm.published,
+          // settings: for future updates
+        }
+      })
+      if (!dbResponse) {
+        return NextResponse.json({
+          error: {
+            message: "Unable to edit form. Please try again."
+          }
+        }, {status: 500})
+      }
+      console.log("db patch------>", dbResponse)
+    }
+    
 
     return NextResponse.json({
       success: {
@@ -169,7 +223,7 @@ export const PUT = async (request: NextRequest) => {
 
   const url = new URL(request.url);
   const id = url.searchParams.get('id') || "";
-   const formId = url.searchParams.get('form-id') || "";
+  const formId = url.searchParams.get('form-id') || "";
   const action = url.searchParams.get('action') || "";
   
   if (!id) {
@@ -193,7 +247,6 @@ export const PUT = async (request: NextRequest) => {
   const userEmail = session.user?.email || "mdc-invalid";
 
   const formEntry = await request.formData();
-    console.log("ogayolooo", id, formEntry)
     const filledForm = {
       type: formEntry.get("type") as string || "",
       title: formEntry.get("title") as string || "",
@@ -266,7 +319,7 @@ export const PUT = async (request: NextRequest) => {
       if (!dbResponse) {
         return NextResponse.json({
           error: {
-            message: "Unable to delete question. Please try again."
+            message: "Unable to add question. Please try again."
           }
         }, {status: 500})
       }

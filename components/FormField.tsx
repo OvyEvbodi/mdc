@@ -102,7 +102,7 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
   };
 
   const handleQuestionEdit: (prevState: MDCQuestionChoiceResponse, formData: FormData) => Promise<MDCQuestionChoiceResponse> = async (prevState: MDCQuestionChoiceResponse, formData: FormData) => {
-    const result = await fetch(`/api/forms/edit?form-id=${props.form_id}&id=${props.id}`, {
+    const result = await fetch(`/api/forms/edit?form-id=${props.form_id}&id=${props.id}&action=update-question`, {
       method: "PATCH",
       body: formData
     })
@@ -130,13 +130,17 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
             <div className="border space-y-4 boder-primary p-3 rounded-sm shadow inset-shadow-md">
               {state.zodErrors && <p>{JSON.stringify(state.zodErrors)}</p>}
               <form action={action} className=" space-y-3">
-                <div>
+              <Label htmlFor="" className="text-muted">Type: {props.type}</Label>
+                <div className="space-y-1">
+                <Label htmlFor="title">Title</Label>
                 <Input className="" name="title" placeholder={props.title || "Enter title"} defaultValue={props.title} />
                 </div>
-                <div>
+                <div className="space-y-1">
+                <Label htmlFor="label">Label</Label>
                   <Input className="" name="label" placeholder={props.label || "Enter label"} defaultValue={props.label} />
                 </div>
-                <div>
+                <div className="space-y-1">
+                <Label htmlFor="placeholder">Placeholder</Label>
                   <Input className="" name="placeholder" placeholder={props.placeholder || "Enter placeholder"} defaultValue={props.placeholder} />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -185,6 +189,7 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
               </div>
               <div>
                 <div><span className="font-bold">Title: </span>{props.title}</div>
+                <div><span className="font-bold">Type: </span>{props.type}</div>
                 <div><span className="font-bold">Label: </span>{props.label}</div>
                 <div><span className="font-bold">Required: </span>{props.required}</div>
                 <div><span className="font-bold">Placeholder: </span>{props.placeholder}</div>

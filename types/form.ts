@@ -5,13 +5,14 @@ export interface MDCFormInterface extends Form {
   questions: Question[]
 }
 
-export interface FormResponse extends Response {
+export interface FormResponse {
   data: {
     form: MDCFormInterface,
     user: MDCUserInterface
   };
-  sucess?: {message: string;}
+  success?: {message: string;}
   error?:  {message: string;}
+  zodErrors?: formErrors;
 }
 
 export interface FormListResponse extends Response {

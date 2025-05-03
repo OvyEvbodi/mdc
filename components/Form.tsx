@@ -8,13 +8,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Link from "next/link"
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge"
+
 
 const MDCForm = (form: MDCFormInterface) => {
   return (
       <Card className="">
         <CardHeader>
-          <CardTitle>{form.name}</CardTitle>
+          <CardTitle>
+            <div>
+              <h3>{form.name}</h3>
+              <Badge variant="default">{form.published ? "Published" : "Deactivated"}</Badge>
+            </div>
+          </CardTitle>
           <CardDescription>{form.description}</CardDescription>
         </CardHeader>
         <CardContent>
