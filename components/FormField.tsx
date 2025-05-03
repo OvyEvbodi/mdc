@@ -15,7 +15,7 @@ import { MDCQuestionChoice, MDCQuestionChoiceResponse } from "@/types/form"
 import { Button } from "@/components/ui/button";
 import { useActionState, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, SquareX, Trash2, X } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -154,7 +154,10 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
                 </div>
                 <input type="hidden" name="question_id" value={props.id} />
                 <input type="hidden" name="type" value={props.type} />
-                <Button className="cursor-pointer" disabled={isPending}>Save</Button>
+                <div className="flex justify-between items-center">
+                  <Button className="cursor-pointer" disabled={isPending}>Save</Button>
+                  <SquareX onClick={() => setEditMode(false)} strokeWidth={1.4} size={32} className="bg-destructive p-1 text-background rounded-sm" />
+                </div>
               </form>
             </div>
           ) : 
@@ -298,7 +301,10 @@ export const MDCNewQuestionEditField = (props: MDCQuestionChoice) => {
                 </div>
                 <input type="hidden" name="question_id" value={props.id} />
                 <input type="hidden" name="type" value={props.type} />
-                <Button className="cursor-pointer" disabled={isPending}>Save</Button>
+                <div className="flex justify-between items-center">
+                  <Button className="cursor-pointer" disabled={isPending}>Save</Button>
+                  <SquareX onClick={() => setEditMode(false)} strokeWidth={1.4} size={32} className="bg-destructive p-1 text-background rounded-sm" />
+                </div>
               </form>
             </div>
           ) :
