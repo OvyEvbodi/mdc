@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-// import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { auth } from "@/lib/auth"
 import { PrismaClient} from "@prisma/client";
 import { questionSchema } from "@/zod_schema";
@@ -218,15 +218,13 @@ export const PATCH = async (request: NextRequest) => {
 }
 
 // Add a new question or form
-// delete a question
 export const PUT = async (request: NextRequest) => {
 
   const url = new URL(request.url);
-  const id = url.searchParams.get('id') || "";
   const formId = url.searchParams.get('form-id') || "";
   const action = url.searchParams.get('action') || "";
   
-  if (!id) {
+  if (!formId) {
     return NextResponse.json({ 
       error: {
         message: "Missing formId"
@@ -247,29 +245,6 @@ export const PUT = async (request: NextRequest) => {
   const userEmail = session.user?.email || "mdc-invalid";
 
   const formEntry = await request.formData();
-    const filledForm = {
-      type: formEntry.get("type") as string || "",
-      title: formEntry.get("title") as string || "",
-      label: formEntry.get("label") as string || "",
-      placeholder: formEntry.get("placeholder") as string || "",
-      required: formEntry.get("required") as string || "false",
-      id,
-      form_id: formId
-      // updated at??
-    };
-    // const validatedForm = questionSchema.safeParse(filledForm);
-    
-
-    // if (!validatedForm.success) {
-    //   const formErrors = validatedForm.error.flatten().fieldErrors;
-
-    //   console.log(formErrors, filledForm)
-      
-    //   return NextResponse.json({
-    //     zodErrors: formErrors,
-    //     data: filledForm
-    //   }, { status: 400 })
-    // }
 
   // Retrieve user's forms from database
   try {
@@ -306,11 +281,34 @@ export const PUT = async (request: NextRequest) => {
     if (user.id !== formResult.user_id) {
       return NextResponse.json({
         error: {
-          mesage: "You are not allowed to edit this form"
+          mesage: "You are not allowed to save this form"
         }
       }, {status: 403})
     }
     if (action === "save-question") {
+      const filledForm = {
+        type: formEntry.get("type") as string || "",
+        title: formEntry.get("title") as string || "",
+        label: formEntry.get("label") as string || "",
+        placeholder: formEntry.get("placeholder") as string || "",
+        required: formEntry.get("required") as string || "false",
+        id: uuidv4(),
+        form_id: formId
+        // updated at??
+      };
+      // const validatedForm = questionSchema.safeParse(filledForm);
+      
+  
+      // if (!validatedForm.success) {
+      //   const formErrors = validatedForm.error.flatten().fieldErrors;
+  
+      //   console.log(formErrors, filledForm)
+        
+      //   return NextResponse.json({
+      //     zodErrors: formErrors,
+      //     data: filledForm
+      //   }, { status: 400 })
+      // }
       const dbResponse = await db.questions.create({
         data: {
           ...filledForm
@@ -335,7 +333,7 @@ export const PUT = async (request: NextRequest) => {
         mesage: "successfully deleted!"
       },
       data: {user}
-    }, {status: 200})
+    }, {status: 201})
   }
   catch (error) {
     console.error(error)

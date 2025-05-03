@@ -43,7 +43,7 @@ const FormEditor = (formdata:FormResponse ) => {
       placeholder: "",
       required: "",
       form_id: formdata.data.form.id,
-      id: uuidv4()
+      id: ""
     };
     console.log(questionInitialData)
     setNewQuestionsList([...newQuestionsList, {...questionInitialData}])
@@ -64,6 +64,8 @@ const FormEditor = (formdata:FormResponse ) => {
       const feedback:FormResponse = await result.json();
       router.refresh()
       setEditMode(false)
+      if (result.status === 201) toast(`${formdata.data.form.name} form succcessfully updated!`)
+      if (result.status === 500) toast(`Error editing form`)
   
       return {
         error: feedback.error || null,

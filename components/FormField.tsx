@@ -15,7 +15,7 @@ import { MDCQuestionChoice, MDCQuestionChoiceResponse } from "@/types/form"
 import { Button } from "@/components/ui/button";
 import { useActionState, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, SquareX, Trash2, X } from "lucide-react";
+import { Pencil, SquareX, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,6 +27,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 
 // Individual form fields
@@ -96,7 +97,8 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
     const result = await fetch(`/api/forms/edit?form-id=${props.form_id}&id=${props.id}&action=delete-question`, {
       method: "DELETE",
     })
-    if (result.status === 200)
+    if (result.status === 200) toast(`Question Deleted!`)
+    if (result.status === 500) toast(`Error saving question`)
       router.refresh();
     // else set error or sth
   };
@@ -108,7 +110,9 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
     })
     if (result.status !== 201) console.log(result.status);
     const feedback:MDCQuestionChoiceResponse = await result.json();
-    router.refresh();
+    router.refresh()
+    if (result.status === 201) toast(`${props.title} question succcessfully updated!`)
+    if (result.status === 500) toast(`Error editing question`)
 
     return {
       error: feedback.error || null,
@@ -130,21 +134,21 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
             <div className="border space-y-4 boder-primary p-3 rounded-sm shadow inset-shadow-md">
               {state.zodErrors && <p>{JSON.stringify(state.zodErrors)}</p>}
               <form action={action} className=" space-y-3">
-              <Label htmlFor="" className="text-muted">Type: {props.type}</Label>
+                <Label htmlFor="" className="text-muted">Type: {props.type}</Label>
                 <div className="space-y-1">
-                <Label htmlFor="title">Title</Label>
-                <Input className="" name="title" placeholder={props.title || "Enter title"} defaultValue={props.title} />
+                  <Label htmlFor="title">Title</Label>
+                  <Input className="" name="title" placeholder={props.title || "Enter title"} defaultValue={props.title} />
                 </div>
                 <div className="space-y-1">
-                <Label htmlFor="label">Label</Label>
+                  <Label htmlFor="label">Label</Label>
                   <Input className="" name="label" placeholder={props.label || "Enter label"} defaultValue={props.label} />
                 </div>
                 <div className="space-y-1">
-                <Label htmlFor="placeholder">Placeholder</Label>
+                  <Label htmlFor="placeholder">Placeholder</Label>
                   <Input className="" name="placeholder" placeholder={props.placeholder || "Enter placeholder"} defaultValue={props.placeholder} />
                 </div>
                 <div className="flex flex-col gap-3">
-                <Label htmlFor="required">Required</Label>
+                  <Label htmlFor="required">Required</Label>
                   <RadioGroup defaultValue={props.required} name="required">
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="true" id={props.id} />
@@ -252,13 +256,15 @@ export const MDCNewQuestionEditField = (props: MDCQuestionChoice) => {
   };
 
   const handleQuestionSave: (prevState: MDCQuestionChoiceResponse, formData: FormData) => Promise<MDCQuestionChoiceResponse> = async (prevState: MDCQuestionChoiceResponse, formData: FormData) => {
-    const result = await fetch(`/api/forms/edit?form-id=${props.form_id}&id=${props.id}&action=save-question`, {
+    const result = await fetch(`/api/forms/edit?form-id=${props.form_id}&action=save-question`, {
       method: "PUT",
       body: formData
     })
-    if (result.status !== 201) console.log(result.status);
+    if (result.status === 201) toast(`Question added!`)
+    if (result.status === 500) toast(`Error saving question`)
     const feedback:MDCQuestionChoiceResponse = await result.json();
-    router.refresh();
+    router.refresh()
+    
 
     // delete from temporary list  
 
