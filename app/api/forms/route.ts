@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 // import { v4 as uuidv4 } from 'uuid';
 import { auth } from "@/lib/auth"
-import { PrismaClient, users as User } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 
 // Get all forms owned by a signed in user

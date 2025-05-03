@@ -47,3 +47,7 @@ export interface MDCQuestionChoiceResponse  {
   data?: MDCQuestionChoice;
   zodErrors?: formErrors;
 }
+
+export interface MDCQuestionTypes {
+  type: "input" | "select" | "radio" | "checkbox"
+}

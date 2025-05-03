@@ -1,6 +1,6 @@
 "use client"
 
-import { FormResponse } from '@/types/form';
+import { FormResponse, MDCQuestionChoice } from '@/types/form';
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,22 +15,30 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { MDCFormEditField } from '@/components/FormField';
+import { MDCFormEditField, MDCNewQuestionEditField } from '@/components/FormField';
 import { Reorder } from 'framer-motion';
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
-
+import { v4 as uuidv4 } from 'uuid';
 
 const FormEditor = (formdata:FormResponse ) => {
-  const [ questionsList, setQuestionsList] = useState(formdata.data.form.questions);
-  const [ newQuestionsList, setNewQuestionsList ] = useState([]);
-  const questionTypes = ["input", "radio", "select", "checkbox"];
-  const questionInitialData = {
-    
-  };
 
-  const handleAddQuestionField = () => {
-    //
+  const [ questionsList, setQuestionsList] = useState(formdata.data.form.questions);
+  const [ newQuestionsList, setNewQuestionsList ] = useState<MDCQuestionChoice[]>([]);
+  const questionTypes = ["input", "radio", "select", "checkbox"];
+  
+  const handleAddQuestionField = (type: string) => {
+    const questionInitialData = {
+      type,
+      title: "",
+      label: "",
+      placeholder: "",
+      required: "",
+      form_id: formdata.data.form.id,
+      id: uuidv4()
+    };
+    console.log(questionInitialData)
+    setNewQuestionsList([...newQuestionsList, {...questionInitialData}])
   };
 
   return (
@@ -46,7 +54,7 @@ const FormEditor = (formdata:FormResponse ) => {
             <div>
               {questionTypes.map((type, index) => (
                 <div key={index} className='p-2 cu'>
-                  <Button onClick={handleAddQuestionField} className='cursor-pointer bg-transparent'>Add {type} field <Plus /></Button>
+                  <Button onClick={() => handleAddQuestionField(type)} className='cursor-pointer bg-transparent'>Add {type} field <Plus /></Button>
                 </div>
               ))}
             </div>
@@ -67,13 +75,20 @@ const FormEditor = (formdata:FormResponse ) => {
           {
             formdata.data.form.questions.map((question, index) => (
               <Reorder.Item value={question} key={index}>
-                <div className='p-4 m-4' >
+                <div className='p-3 md:m-4' >
                   <MDCFormEditField {...question} />
                 </div>
               </Reorder.Item>
             ))
           }
           </Reorder.Group>
+          {
+            newQuestionsList.map((question, index) => (
+              <div key={index} className='p-3 md:m-4'>
+                <MDCNewQuestionEditField {...question} />
+              </div>
+            ))
+          }
           </div>
           
         </CardContent>
@@ -88,5 +103,6 @@ const FormEditor = (formdata:FormResponse ) => {
     </div>
   )
 }
+
 
 export default FormEditor
