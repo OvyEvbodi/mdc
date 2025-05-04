@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${roboto.variable}  antialiased`}
+        className={`flex flex-col min-h-screen justify-center ${roboto.variable}  antialiased`}
       >
         {children}
         <Toaster />

@@ -35,10 +35,10 @@ const FormsPage = async() => {
 
   
   return (
-    <main className="p-8 md:pt-12 max-w-6xl flex flex-col justify-center items-center">
+    <main className="min-h-screen p-8 md:pt-12 max-w-6xl flex flex-col justify-center items-center">
     
-          <h1 className="bg-blue-400">Forms page</h1>
-          <section className="flex flex-wrap gap-4 md:gap-8">
+          <h1 className="p-4 text-3xl font-bold">Forms page</h1>
+          <section className="flex justify-center items-center flex-wrap gap-4 md:gap-8 ">
             {
               forms && forms.map(form => (
                 <MDCForm key={form.id} {...form} />
@@ -46,7 +46,7 @@ const FormsPage = async() => {
             }
           </section>
             
-            <p>{session && JSON.stringify(session.user)}</p>
+          <p>{session && JSON.stringify(session.user)}</p>
     </main>
   )
 };
