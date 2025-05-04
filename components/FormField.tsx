@@ -388,4 +388,33 @@ export const MDCNewQuestionEditField = (props: MDCQuestionChoice) => {
 }
 
 
+export const ResponseFormField = (props: MDCQuestionChoice) => {
+  if (!props.type) return;
+
+  const field = {
+    input: () => (
+      <Input className="" />
+    ),
+    select: () => (<div></div>),
+    chexkbox: () => (<div></div>),
+    radio: () => (
+      <div className="flex flex-col gap-3">
+          <RadioGroup name={props.title}>
+            {
+              props.options!.map((option, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <RadioGroupItem value={option} id={option} />
+                  <Label htmlFor={option}>{option}</Label>
+                </div>
+              ))
+            }
+        </RadioGroup>
+      </div>
+    ),
+  };
+
+  return props.type && field[props.type as keyof typeof field]()
+}
+
+
 export default MDCFormField;

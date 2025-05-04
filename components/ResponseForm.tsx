@@ -14,7 +14,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { MDCFormEditField } from "./FormField";
+import { ResponseFormField } from "./FormField";
+import { Input } from "./ui/input";
 
 
 
@@ -25,9 +26,7 @@ const ResponseForm = (form: MDCFormInterface) => {
 
   form.questions.forEach(question => {
     formDefault[question.title] = "";
-    formSchemaObject[question.title] = z.string().min(3, {
-      message: `${question.title} must be at least 3 characters.`,
-    });
+    formSchemaObject[question.title] = z.string({required_error:`${question.title} is required.`});
   })
 
   const formSchema = z.object(formSchemaObject)
@@ -38,6 +37,7 @@ const ResponseForm = (form: MDCFormInterface) => {
   })
  
   function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log("submitted")
     console.log(values)
   }
   return (
@@ -53,7 +53,11 @@ const ResponseForm = (form: MDCFormInterface) => {
             <FormItem>
               <FormLabel key={index}>{question.title}</FormLabel>
               <FormControl>
-                <MDCFormEditField {...question} />
+                {
+                  question.type === "input" ? (<Input {...field} placeholder={question.placeholder}/>) : (<div></div>)
+                }
+                {/* <Input {...field}/> */}
+                {/* <ResponseFormField {...question} /> */}
               </FormControl>
               <FormDescription>
                 {question.label}
