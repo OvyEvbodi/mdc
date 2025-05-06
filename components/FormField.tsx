@@ -130,7 +130,179 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
     input: () => (
       <div>
         {
-          editMode ? (
+          editMode ? 
+          (
+            <div className="border space-y-4 boder-primary p-3 rounded-sm shadow inset-shadow-md">
+              {state.zodErrors && <p>{JSON.stringify(state.zodErrors)}</p>}
+              <form action={action} className=" space-y-3">
+                <Label htmlFor="" className="text-muted">Type: {props.type}</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="title">Title</Label>
+                  <Input className="" name="title" placeholder={props.title || "Enter title"} defaultValue={props.title} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="label">Label</Label>
+                  <Input className="" name="label" placeholder={props.label || "Enter label"} defaultValue={props.label} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="placeholder">Placeholder</Label>
+                  <Input className="" name="placeholder" placeholder={props.placeholder || "Enter placeholder"} defaultValue={props.placeholder} />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <Label htmlFor="required">Required</Label>
+                  <RadioGroup defaultValue={props.required} name="required">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="true" id={props.id} />
+                        <Label htmlFor="required">Yes</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="false" id={props.id} />
+                        <Label htmlFor="required">No</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+                <input type="hidden" name="question_id" value={props.id} />
+                <input type="hidden" name="type" value={props.type} />
+                <div className="flex justify-between items-center">
+                  <Button className="cursor-pointer" disabled={isPending}>Save</Button>
+                  <SquareX onClick={() => setEditMode(false)} strokeWidth={1.4} size={32} className="bg-destructive p-1 text-background rounded-sm" />
+                </div>
+              </form>
+            </div>
+          ) : 
+          (
+            <div className="border boder-primary p-3 rounded-sm shadow inset-shadow-md">
+            <div className="flex justify-between">
+              <Button onClick={()=> setEditMode(true)} className="cursor-pointer"><Pencil /></Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                <Button variant={"destructive"} className="cursor-pointer"><Trash2 /></Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete {props.title}?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete the question and its response data from our servers.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDeleteQuestion} >Continue</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+            <div>
+              <div><span className="font-bold">Title: </span>{props.title}</div>
+              <div><span className="font-bold">Type: </span>{props.type}</div>
+              <div><span className="font-bold">Label: </span>{props.label}</div>
+              <div><span className="font-bold">Required: </span>{props.required}</div>
+              <div><span className="font-bold">Placeholder: </span>{props.placeholder}</div>
+            </div>
+            </div>
+          )
+        }
+      </div>
+    ),
+    select: () => (
+      <div>
+        {
+          editMode ? 
+          (
+            <div className="border space-y-4 boder-primary p-3 rounded-sm shadow inset-shadow-md">
+              {state.zodErrors && <p>{JSON.stringify(state.zodErrors)}</p>}
+              <form action={action} className=" space-y-3">
+                <Label htmlFor="" className="text-muted">Type: {props.type}</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="title">Title</Label>
+                  <Input className="" name="title" placeholder={props.title || "Enter title"} defaultValue={props.title} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="label">Label</Label>
+                  <Input className="" name="label" placeholder={props.label || "Enter label"} defaultValue={props.label} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="placeholder">Placeholder</Label>
+                  <Input className="" name="placeholder" placeholder={props.placeholder || "Enter placeholder"} defaultValue={props.placeholder} />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <Label htmlFor="required">Required</Label>
+                  <RadioGroup defaultValue={props.required} name="required">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="true" id={props.id} />
+                        <Label htmlFor="required">Yes</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="false" id={props.id} />
+                        <Label htmlFor="required">No</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+                <div>
+                  <span className="font-medium">Options: </span>
+                  {
+                    props.options && props.options.map((option, index) => (
+                    <span key={index}>{option}{props.options![props.options!.length-1] != option && ", "}</span>
+                    ))
+                  }
+                  <div className="bg-primary text-primary-foreground p-1" >Add option</div>
+                </div>
+                <input type="hidden" name="question_id" value={props.id} />
+                <input type="hidden" name="type" value={props.type} />
+                <div className="flex justify-between items-center">
+                  <Button className="cursor-pointer" disabled={isPending}>Save</Button>
+                  <SquareX onClick={() => setEditMode(false)} strokeWidth={1.4} size={32} className="bg-destructive p-1 text-background rounded-sm" />
+                </div>
+              </form>
+            </div>
+          ) : 
+          (
+            <div className="border boder-primary p-3 rounded-sm shadow inset-shadow-md">
+              <div className="flex justify-between">
+                <Button onClick={()=> setEditMode(true)} className="cursor-pointer"><Pencil /></Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                  <Button variant={"destructive"} className="cursor-pointer"><Trash2 /></Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete {props.title}?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete the question and its response data from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteQuestion} >Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+              <div>
+                <div><span className="font-bold">Title: </span>{props.title}</div>
+                <div><span className="font-bold">Type: </span>{props.type}</div>
+                <div><span className="font-bold">Label: </span>{props.label}</div>
+                <div><span className="font-bold">Required: </span>{props.required}</div>
+                <div><span className="font-bold">Placeholder: </span>{props.placeholder}</div>
+                <div>
+                  <span className="font-bold">Options: </span>
+                  {
+                    props.options && props.options.map((option, index) => (
+                    <span key={index}>{option}{props.options![props.options!.length-1] != option && ", "}</span>
+                    ))
+                  }
+                </div>
+              </div>
+            </div>
+          )
+        }
+      </div>
+    ),
+    radio: () => (
+      <div>
+        {
+          editMode ? 
+          (
             <div className="border space-y-4 boder-primary p-3 rounded-sm shadow inset-shadow-md">
               {state.zodErrors && <p>{JSON.stringify(state.zodErrors)}</p>}
               <form action={action} className=" space-y-3">
@@ -173,23 +345,23 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
             <div className="border boder-primary p-3 rounded-sm shadow inset-shadow-md">
               <div className="flex justify-between">
                 <Button onClick={()=> setEditMode(true)} className="cursor-pointer"><Pencil /></Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                      <Button variant={"destructive"} className="cursor-pointer"><Trash2 /></Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete {props.title}?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the question and its response data from our servers.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={handleDeleteQuestion} >Continue</AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                  <Button variant={"destructive"} className="cursor-pointer"><Trash2 /></Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete {props.title}?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete the question and its response data from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteQuestion} >Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
               <div>
                 <div><span className="font-bold">Title: </span>{props.title}</div>
@@ -197,38 +369,103 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
                 <div><span className="font-bold">Label: </span>{props.label}</div>
                 <div><span className="font-bold">Required: </span>{props.required}</div>
                 <div><span className="font-bold">Placeholder: </span>{props.placeholder}</div>
+                <div>
+                  <span className="font-bold">Options: </span>
+                  {
+                    props.options && props.options.map((option, index) => (
+                    <span key={index}>{option}{props.options![props.options!.length-1] != option && ", "}</span>
+                    ))
+                  }
+                </div>
               </div>
             </div>
           )
         }
       </div>
     ),
-    select: () => (
-      <div className="border boder-primary p-3 rounded-sm shadow inset-shadow-md">
-        <div>Title: {props.title}</div>
-        <div>Label:</div>
-        <div>Required:</div>
-        <div>Placeholder:</div>
-        <div>Options: loop</div>
-      </div>
-    ),
-    radio: () => (
-      <div className="border boder-primary p-3 rounded-sm shadow inset-shadow-md">
-        <div>Title: {props.title}</div>
-        <div>Label:</div>
-        <div>Required:</div>
-        <div>Placeholder:</div>
-        <div>Options: loop</div>
-      </div>
-
-    ),
     check: () => (
-      <div className="border boder-primary p-3 rounded-sm shadow inset-shadow-md">
-        <div>Title: {props.title}</div>
-        <div>Label:</div>
-        <div>Required:</div>
-        <div>Placeholder:</div>
-        <div>Options: loop</div>
+      <div>
+        {
+          editMode ? 
+          (
+            <div className="border space-y-4 boder-primary p-3 rounded-sm shadow inset-shadow-md">
+              {state.zodErrors && <p>{JSON.stringify(state.zodErrors)}</p>}
+              <form action={action} className=" space-y-3">
+                <Label htmlFor="" className="text-muted">Type: {props.type}</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="title">Title</Label>
+                  <Input className="" name="title" placeholder={props.title || "Enter title"} defaultValue={props.title} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="label">Label</Label>
+                  <Input className="" name="label" placeholder={props.label || "Enter label"} defaultValue={props.label} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="placeholder">Placeholder</Label>
+                  <Input className="" name="placeholder" placeholder={props.placeholder || "Enter placeholder"} defaultValue={props.placeholder} />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <Label htmlFor="required">Required</Label>
+                  <RadioGroup defaultValue={props.required} name="required">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="true" id={props.id} />
+                        <Label htmlFor="required">Yes</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="false" id={props.id} />
+                        <Label htmlFor="required">No</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+                <input type="hidden" name="question_id" value={props.id} />
+                <input type="hidden" name="type" value={props.type} />
+                <div className="flex justify-between items-center">
+                  <Button className="cursor-pointer" disabled={isPending}>Save</Button>
+                  <SquareX onClick={() => setEditMode(false)} strokeWidth={1.4} size={32} className="bg-destructive p-1 text-background rounded-sm" />
+                </div>
+              </form>
+            </div>
+          ) : 
+          (
+            <div className="border boder-primary p-3 rounded-sm shadow inset-shadow-md">
+              <div className="flex justify-between">
+                <Button onClick={()=> setEditMode(true)} className="cursor-pointer"><Pencil /></Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                  <Button variant={"destructive"} className="cursor-pointer"><Trash2 /></Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete {props.title}?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete the question and its response data from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteQuestion} >Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+              <div>
+                <div><span className="font-bold">Title: </span>{props.title}</div>
+                <div><span className="font-bold">Type: </span>{props.type}</div>
+                <div><span className="font-bold">Label: </span>{props.label}</div>
+                <div><span className="font-bold">Required: </span>{props.required}</div>
+                <div><span className="font-bold">Placeholder: </span>{props.placeholder}</div>
+                <div>
+                  <span className="font-bold">Options: </span>
+                  {
+                    props.options && props.options.map((option, index) => (
+                    <span key={index}>{option}{props.options![props.options!.length-1] != option && ", "}</span>
+                    ))
+                  }
+                </div>
+              </div>
+            </div>
+          )
+        }
       </div>
     ),
   }
