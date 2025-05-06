@@ -21,7 +21,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const ResponseForm = (form: MDCFormInterface) => {
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formSchemaObject:any = {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formDefault:any = {};
 
   const getOptionsSchema = (options: string[]): ZodType<string> => {

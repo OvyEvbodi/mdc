@@ -7,14 +7,11 @@ import { notFound } from 'next/navigation';
 import FormEditor from '@/components/FormEditor';
 
 
-const EditFormPage = async ({params}: {
-  params: {
-    id: string
-  }
-}) => {
+const EditFormPage = async (props: {params: Promise<{id: string}> }) => {
+  const params = await props.params;
 
-  const { id } = await params;
-  const cookieHeader = await cookies().toString(); 
+  const { id } = params;
+  const cookieHeader = (await cookies()).toString(); 
   const session = await auth();
   if (!session) redirect("/");
     

@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 // import { v4 as uuidv4 } from 'uuid';
 import { auth } from "@/lib/auth"
 import { PrismaClient } from "@prisma/client";
 
 
 // Get all forms owned by a signed in user
-export const GET = async (request: NextRequest) => {
+export const GET = async () => {
 
   // Validate auth 
   const session = await auth();

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from 'uuid';
 import { auth } from "@/lib/auth"
 import { PrismaClient} from "@prisma/client";
-import { questionSchema } from "@/zod_schema";
+// import { questionSchema } from "@/zod_schema";
 
 
 // Get a form owned by a signed in user

@@ -18,7 +18,7 @@ export default async function Home() {
     placeholder: "holalo",
     type: "select",
     form_id: "",
-    required: false,
+    required: "false",
     options: ["hi"]
 }
   return (

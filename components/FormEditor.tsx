@@ -73,6 +73,7 @@ const FormEditor = (formdata:FormResponse ) => {
         zodErrors: feedback.zodErrors
       } as FormResponse
     };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [ state, action, isPending ] = useActionState(handleFormEdit, initialState);
     
     const handleCopyFormUrl = () => {
@@ -120,7 +121,7 @@ const FormEditor = (formdata:FormResponse ) => {
                         <Input className="" name="description" placeholder={formdata.data.form.description || "Enter form description"} defaultValue={formdata.data.form.description} />
                       </div>
                       <div className="flex flex-col gap-3">
-                  <Label htmlFor="required">Required</Label>
+                  <Label htmlFor="required">Published</Label>
                   <RadioGroup defaultValue={formdata.data.form.published ? "true" : "false" } name="published">
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="true" id="published-true" />

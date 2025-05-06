@@ -7,17 +7,14 @@ import { notFound } from 'next/navigation';
 import ResponseForm from '@/components/ResponseForm';
 
 
-const ResponseFormPage = async ({params}: {
-  params: {
-    id: string
-  }
-}) => {
+const ResponseFormPage= async (props: {params: Promise<{formid: string}> }) => {
+  const params = await props.params;
 
-  const { id } = await params;
-  const cookieHeader = await cookies().toString(); 
+  const id = params.formid;
+  const cookieHeader = (await cookies()).toString();
   const session = await auth();
   if (!session) redirect("/");
-    
+
   const result = await fetch(`http://127.0.0.1:3000/api/forms/edit?id=${id}`, {
     method: "GET",
     body: null,
