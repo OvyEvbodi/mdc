@@ -18,7 +18,6 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 
-
 const ResponseForm = (form: MDCFormInterface) => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,12 +40,15 @@ const ResponseForm = (form: MDCFormInterface) => {
   };
 
   form.questions.forEach(question => {
-    formDefault[question.title] = "";
-    formSchemaObject[question.title] =  question.type === "input" ?
-     z.string({required_error:`${question.title} is required.`}) :
-     question.type === "radio" ? 
-     getOptionsSchema(question.options) :
-    ""
+    if ( question.required === "true"){
+      formDefault[question.title] = "";
+      formSchemaObject[question.title] =  question.type === "input" ?
+      z.string({required_error:`${question.title} is required.`}).min(1, `Please enter a response for ${question.title}`) :
+      question.type === "radio" ? 
+      getOptionsSchema(question.options) :
+      ""
+    } 
+    
   })
 
   const formSchema = z.object(formSchemaObject)
@@ -56,13 +58,27 @@ const ResponseForm = (form: MDCFormInterface) => {
     defaultValues: formDefault
   })
  
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("submitted")
+    const result = await fetch(`/api/forms/responses?id=${form.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values)
+    })
+
+
     console.log(values)
   }
   return (
+    <div className="flex flex-col gap-4 justify-center items-center min-h-screen px-4 md:px-12">
+      <div className="text-secondary-foreground bg-secondary text-center w-dvw p-4 ">
+        <h1 className="font-bold text-xl md:text-2xl">{form.name}</h1>
+        <p>{form.description}</p>
+      </div>
     <Form {...publicForm}>
-      <form onSubmit={publicForm.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={publicForm.handleSubmit(onSubmit)} className="space-y-6 p-4 md:p-8 min-w-full sm:min-w-3/4">
         {
           form.questions.map((question, index) => (
             <div key={index}>
@@ -95,6 +111,8 @@ const ResponseForm = (form: MDCFormInterface) => {
                             ))
                           }
                         </RadioGroup>
+                        : question.type === "select" ?
+                        (<div></div>)
                         : (<div></div>)
                       }
                     </FormControl>
@@ -112,6 +130,7 @@ const ResponseForm = (form: MDCFormInterface) => {
         <Button type="submit">Submit Response</Button>
       </form>
     </Form>
+    </div>
   )
 }
 

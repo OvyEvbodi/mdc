@@ -28,6 +28,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogDescription,
+//   DialogFooter,
+//   DialogHeader,
+//   DialogTitle,
+//   DialogTrigger,
+// } from "@/components/ui/dialog";
 
 
 // Individual form fields
@@ -245,7 +254,7 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
                     <span key={index}>{option}{props.options![props.options!.length-1] != option && ", "}</span>
                     ))
                   }
-                  <div className="bg-primary text-primary-foreground p-1" >Add option</div>
+                  <div onClick={handleAdOption} className="bg-primary text-primary-foreground p-1" >Add option</div>
                 </div>
                 <input type="hidden" name="question_id" value={props.id} />
                 <input type="hidden" name="type" value={props.type} />

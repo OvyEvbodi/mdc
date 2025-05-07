@@ -1,0 +1,102 @@
+import { NextRequest, NextResponse } from "next/server";
+import { v4 as uuidv4 } from 'uuid';
+import { auth } from "@/lib/auth"
+import { PrismaClient} from "@prisma/client";
+
+
+// Add a response entry
+export const PUT = async (request: NextRequest) => {
+
+  const url = new URL(request.url);
+  const id = url.searchParams.get('id') || "";
+  const responseId = uuidv4();
+  const req = await request.json();
+  console.log(req, id)
+
+  // return
+  
+  // if (!id) {
+  //   return NextResponse.json({ 
+  //     error: {
+  //       message: "Missing formId"
+  //     }
+  //   }, { status: 400 });
+  // }
+
+  // // Validate auth 
+  // const session = await auth();
+
+  // if (!session) {
+  //   return NextResponse.json({
+  //     error: {
+  //       mesage: "You are not authorized to view this page"
+  //     }
+  //   }, {status: 401})
+  // }
+  // const userEmail = session.user?.email || "mdc-invalid";
+
+  // // Retrieve user's forms from database
+  // try {
+
+  //   const db = new PrismaClient();
+  //   const user = await db.users.findFirst({
+  //     where: {
+  //       email: userEmail
+  //     }
+  //   })
+  //   if (!user) {
+  //     return NextResponse.json({
+  //       error: {
+  //         mesage: "Please sign up"
+  //       }
+  //     }, {status: 401})
+  //   }
+  //   const formResult = await db.forms.findFirst({
+  //     where: {
+  //       user_id: user.id,
+  //       id: id
+  //     }
+  //   })
+
+  //   if (!formResult) {
+  //     return NextResponse.json({
+  //       error: {
+  //         mesage: "Form not found"
+  //       }
+  //     }, {status: 404})
+
+  //   }
+  //   const questions = await db.questions.findMany({
+  //       where: {
+  //         form_id: formResult.id
+  //       }
+  //     })
+
+  //   const form = {
+  //     ...formResult,
+  //     questions
+  //   }
+
+  //   return NextResponse.json({
+  //     success: {
+  //       mesage: "successful"
+  //     },
+  //     data: {form, user}
+  //   }, {status: 200})
+  // }
+  // catch (error) {
+  //   console.error(error)
+  //   return NextResponse.json({
+  //     error: {
+  //       message: "Unable to get forms. Please check back later."
+  //     }
+  //   }, {status: 500})
+  // }
+
+  return NextResponse.json({
+    success: {
+      mesage: "successful"
+    },
+    data: {}
+  }, {status: 200})
+};
