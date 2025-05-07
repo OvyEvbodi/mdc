@@ -112,6 +112,8 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
     // else set error or sth
   };
 
+  const handleAddOption = async () => {};
+
   const handleQuestionEdit: (prevState: MDCQuestionChoiceResponse, formData: FormData) => Promise<MDCQuestionChoiceResponse> = async (prevState: MDCQuestionChoiceResponse, formData: FormData) => {
     const result = await fetch(`/api/forms/edit?form-id=${props.form_id}&id=${props.id}&action=update-question`, {
       method: "PATCH",
@@ -254,7 +256,7 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
                     <span key={index}>{option}{props.options![props.options!.length-1] != option && ", "}</span>
                     ))
                   }
-                  <div onClick={handleAdOption} className="bg-primary text-primary-foreground p-1" >Add option</div>
+                  <div onClick={handleAddOption} className="bg-primary text-primary-foreground p-1" >Add option</div>
                 </div>
                 <input type="hidden" name="question_id" value={props.id} />
                 <input type="hidden" name="type" value={props.type} />
