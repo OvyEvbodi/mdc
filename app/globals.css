@@ -248,3 +248,11 @@
     --vee-accent: #fff;
   }
 }
+
+/* styles.css */
+.NavigationMenuLink {
+	text-decoration: none;
+}
+.NavigationMenuLink[data-active] {
+	text-decoration: "underline";
+}

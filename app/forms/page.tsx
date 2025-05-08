@@ -46,8 +46,6 @@ const FormsPage = async() => {
           }
         </section>
       </div>
-        
-      <p>{session && JSON.stringify(session.user)}</p>
     </main>
   )
 };

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import Nav from "@/components/Nav";
+import { auth } from "@/lib/auth";
 
 
 const roboto = Roboto({
@@ -15,16 +17,18 @@ export const metadata: Metadata = {
   description: "A robust data-collection service.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${roboto.variable}  antialiased`}
       >
+        <Nav session={session} />
         {children}
         <Toaster />
       </body>

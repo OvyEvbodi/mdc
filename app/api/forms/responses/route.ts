@@ -10,7 +10,6 @@ export const PUT = async (request: NextRequest) => {
   const id = url.searchParams.get('id') || "";
   const responseId = uuidv4();
   const responseValues = await request.json();
-  const answerData = {};
   console.log(responseValues, id)
 
   if (!id) {
