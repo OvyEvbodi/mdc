@@ -15,7 +15,7 @@ const ResponseFormPage= async (props: {params: Promise<{formid: string}> }) => {
   const session = await auth();
   if (!session) redirect("/");
 
-  const result = await fetch(`/api/forms/edit?id=${id}`, {
+  const result = await fetch(`https://mdc-nu.vercel.app/api/forms/edit?id=${id}`, {
     method: "GET",
     body: null,
     headers: {

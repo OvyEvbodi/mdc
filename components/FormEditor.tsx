@@ -55,7 +55,7 @@ const FormEditor = (formdata:FormResponse ) => {
   };
 
   const handleFormEdit: (prevState: FormResponse, formData: FormData) => Promise<FormResponse> = async (prevState: FormResponse, formData: FormData) => {
-      const result = await fetch(`/api/forms/edit?form-id=${formdata.data.form.id}&action=update-form`, {
+      const result = await fetch(`https://mdc-nu.vercel.app/api/forms/edit?form-id=${formdata.data.form.id}&action=update-form`, {
         method: "PATCH",
         body: formData
       })
