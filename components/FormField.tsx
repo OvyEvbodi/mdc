@@ -103,7 +103,7 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
   const router = useRouter();
 
   const handleDeleteQuestion = async () => {
-    const result = await fetch(`/api/forms/edit?form-id=${props.form_id}&id=${props.id}&action=delete-question`, {
+    const result = await fetch(`https://mdc-nu.vercel.app/api/forms/edit?form-id=${props.form_id}&id=${props.id}&action=delete-question`, {
       method: "DELETE",
     })
     if (result.status === 200) toast(`Question Deleted!`)
@@ -115,7 +115,7 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
   const handleAddOption = async () => {};
 
   const handleQuestionEdit: (prevState: MDCQuestionChoiceResponse, formData: FormData) => Promise<MDCQuestionChoiceResponse> = async (prevState: MDCQuestionChoiceResponse, formData: FormData) => {
-    const result = await fetch(`/api/forms/edit?form-id=${props.form_id}&id=${props.id}&action=update-question`, {
+    const result = await fetch(`https://mdc-nu.vercel.app/api/forms/edit?form-id=${props.form_id}&id=${props.id}&action=update-question`, {
       method: "PATCH",
       body: formData
     })
@@ -504,7 +504,7 @@ export const MDCNewQuestionEditField = (props: MDCQuestionChoice) => {
   };
 
   const handleQuestionSave: (prevState: MDCQuestionChoiceResponse, formData: FormData) => Promise<MDCQuestionChoiceResponse> = async (prevState: MDCQuestionChoiceResponse, formData: FormData) => {
-    const result = await fetch(`/api/forms/edit?form-id=${props.form_id}&action=save-question`, {
+    const result = await fetch(`https://mdc-nu.vercel.app/api/forms/edit?form-id=${props.form_id}&action=save-question`, {
       method: "PUT",
       body: formData
     })
