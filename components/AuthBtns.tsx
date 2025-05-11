@@ -1,43 +1,41 @@
+import { signIn, signOut } from 'next-auth/react';
 
-import { signIn , signOut} from "@/lib/auth"
+// import { signIn , signOut} from "@/lib/auth"
 
 export const SignInBtn = () => {
 
-  const handleSignIn = async () => {
-    await signIn("google")
-  };
+  // const handleSignIn = async () => {
+  //   await signIn("google")
+  // };
 
   return (
-    <>
-      <form action={handleSignIn}>
-        <button 
-          type="submit"
-          className="bg-blue-600 p-2 cursor-pointer"
-        >
-          Sign in with Google
-        </button>
-      </form>
-    </>
+    <div>
+      <button 
+        onClick={() => signIn('google')}
+        type="submit"
+        className="bg-blue-600 p-2 cursor-pointer"
+      >
+        Sign in with Google
+      </button>
+    </div>
   )
 }
 
 export const SignOutBtn = () => {
 
-  const handleSignOut = async () => {
-    await signOut()
-  };
+  // const handleSignOut = async () => {
+  //   await signOut()
+  // };
 
   return (
-    <>
-      <form action={handleSignOut}>
-        <button 
-          type="submit"
-          className="bg-blue-600 p-2 cursor-pointer"
-        >
-          Sign Out
-        </button>
-      </form>
-    </>
+    <div>
+      <button 
+        onClick={() => signOut()}
+        type="submit"
+        className="bg-blue-600 p-2 cursor-pointer"
+      >
+        Sign Out
+      </button>
+    </div>
   )
 }
-
