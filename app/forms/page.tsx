@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { FormListResponse, MDCFormInterface } from "@/types/form";
-import { auth } from "@/lib/auth"
+import { auth } from "@/lib/auth";
 import MDCForm from "@/components/Form";
 import { redirect } from "next/navigation";
 // import { Button } from "@/components/ui/button";
@@ -19,7 +19,7 @@ const FormsPage = async() => {
   const session = await auth();
   if (!session) redirect("/");
   
-  const result = await fetch("http://127.0.0.1:3000/api/forms", {
+  const result = await fetch("/api/forms", {
     method: "GET",
     body: null,
     headers: {

@@ -15,7 +15,7 @@ const EditFormPage = async (props: {params: Promise<{id: string}> }) => {
   const session = await auth();
   if (!session) redirect("/");
     
-  const result = await fetch(`http://127.0.0.1:3000/api/forms/edit?id=${id}`, {
+  const result = await fetch(`/api/forms/edit?id=${id}`, {
     method: "GET",
     body: null,
     headers: {
