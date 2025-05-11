@@ -4,7 +4,8 @@ import { MDCFormInterface } from "@/types/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z, ZodType } from "zod";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import { toast } from 'sonner';
 import {
   Form,
   FormControl,
@@ -68,8 +69,11 @@ const ResponseForm = (form: MDCFormInterface) => {
       body: JSON.stringify(values)
     })
 
+    if (result.status === 200)
+    toast("Your response has been submitted!")
     // reroute to thank you page and render thank you msg
-    console.log(result)
+    
+    // console.log(result)
   }
   return (
     <div className="flex flex-col gap-4 justify-center items-center min-h-screen px-4 md:px-12">
