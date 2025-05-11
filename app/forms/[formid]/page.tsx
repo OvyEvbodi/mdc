@@ -15,7 +15,7 @@ const ResponseFormPage= async (props: {params: Promise<{formid: string}> }) => {
   const session = await auth();
   if (!session) redirect("/");
 
-  const result = await fetch(`https://mdc-nu.vercel.app/api/forms/edit?id=${id}`, {
+  const result = await fetch(`/api/forms/edit?id=${id}`, {
     method: "GET",
     body: null,
     headers: {
@@ -30,7 +30,18 @@ const ResponseFormPage= async (props: {params: Promise<{formid: string}> }) => {
 
   return (
     <main>
-      <ResponseForm {...formData} />
+      {
+        formData.published ? 
+        (
+          <ResponseForm {...formData} />
+        )
+        :
+        (
+          <div className="text-secondary-foreground bg-secondary text-center w-dvw p-4 ">
+            <h1>This form is currently not accepting responses.</h1>
+          </div>
+        )
+      }
     </main>
   )
 }
