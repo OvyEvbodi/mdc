@@ -41,7 +41,7 @@ const MDCForm = (form: MDCFormInterface) => {
       </CardContent>
       <CardFooter>
         <Link href={`/forms/edit/${form.id}`} className="w-full">
-          <Button className="w-full">
+          <Button className="w-full cursor-pointer">
           <SquareArrowOutUpRight  />View Form
           </Button>
         </Link>

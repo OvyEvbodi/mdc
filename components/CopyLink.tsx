@@ -27,7 +27,7 @@ const CopyLink = ({url } : {url: string}) => {
   return (
     <Dialog>
     <DialogTrigger asChild>
-    <Button variant="link" >Copy Link</Button>
+    <Button variant="link" className='cursor-pointer' >Copy Link</Button>
     </DialogTrigger>
     <DialogContent className="sm:max-w-md">
       <DialogHeader>

@@ -47,10 +47,14 @@ const UserNav = ({ session }: {session: Session | null}) => {
       {
         session ? (
           <div className="flex gap-2">
-          <Avatar>
-            <AvatarImage src={session.user?.image} />
-            <AvatarFallback>{session.user?.name && session.user?.name[0]}</AvatarFallback>
-          </Avatar>
+          {
+            session.user?.image && (
+              <Avatar>
+                <AvatarImage src={session.user?.image} />
+                <AvatarFallback>{session.user?.name && session.user?.name[0]}</AvatarFallback>
+               </Avatar>
+            )
+          }
           <div>{session.user?.name}</div>
           </div>
         )
