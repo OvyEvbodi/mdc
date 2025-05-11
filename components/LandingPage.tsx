@@ -1,14 +1,14 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import { useState } from 'react';
 import { ArrowRight, Check, ChevronDown, ChevronUp, Mail } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { Metadata } from 'next';
+// import { useRouter } from 'next/navigation';
 
 
 export default function LandingPage() {
-  const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'features' | 'pricing' | 'testimonials'>('features');
+  // const router = useRouter();
+  // const [activeTab, setActiveTab] = useState<'features' | 'pricing' | 'testimonials'>('features');
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [showDemoModal, setShowDemoModal] = useState(false);
   const [demoForm, setDemoForm] = useState({
@@ -261,7 +261,7 @@ export default function LandingPage() {
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Simple, Transparent Pricing</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Choose the plan that fits your organization's needs
+              Choose the plan that fits your organization&apos;s needs
             </p>
           </div>
           

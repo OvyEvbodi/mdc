@@ -1,9 +1,5 @@
 import { getUsers } from "@/lib/utils";
-import Image from "next/image";
-import Link from "next/link";
 import { MDCTheme, MDCThemesList, themes } from "@/lib/mdc_themes";
-import FormField from "@/components/FormField";
-import SignInBtn from "@/components/GoogleSignInBtn";
 import LandingPage from "@/components/LandingPage";
 
 

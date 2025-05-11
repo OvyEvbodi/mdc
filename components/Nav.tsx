@@ -6,6 +6,7 @@ import { NavigationMenu } from "radix-ui";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Session } from "next-auth";
+import SignInBtn from "./GoogleSignInBtn";
 
 
 const Link = ({ ...props }) => {
@@ -60,7 +61,9 @@ const UserNav = ({ session }: {session: Session | null}) => {
         )
         :
         (
-          <div>sign in</div>
+          <div>
+            <SignInBtn />
+          </div>
         )
       }
     </section>
