@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge"
-import CopyLink from "./CopyLink";
+import CopyLink from "@/components/CopyLink";
 import { Globe, SquareArrowOutUpRight } from "lucide-react";
 
 
@@ -36,7 +36,7 @@ const MDCForm = (form: MDCFormInterface) => {
           <Badge variant={form.published ? "secondary" : "destructive"}>{form.published ? "Published" : "Deactivated"}</Badge>
         </div>
         <div>
-        <CopyLink url={form.url}  />
+        <CopyLink url={`${process.env.API_BASE_URL}/forms/${form.id}`}  />
         </div>
       </CardContent>
       <CardFooter>

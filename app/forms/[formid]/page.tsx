@@ -1,5 +1,4 @@
 import { FormResponse, MDCFormInterface } from '@/types/form';
-import { redirect } from 'next/navigation';
 import React from 'react';
 import { notFound } from 'next/navigation';
 import ResponseForm from '@/components/ResponseForm';
@@ -11,11 +10,10 @@ const ResponseFormPage= async (props: {params: Promise<{formid: string}> }) => {
 
   const id = params.formid;
 
-  const result = await fetch(`${URL}/api/forms/edit?id=${id}`, {
+  const result = await fetch(`${URL}/api/forms/responses?id=${id}`, {
     method: "GET"
   });
   if (result.status === 404) notFound();
-  if  (result.status === 401) redirect("/");
 
   const formResult:FormResponse = await result.json();
   const formData: MDCFormInterface = formResult.data.form;

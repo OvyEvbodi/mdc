@@ -3,6 +3,67 @@ import { v4 as uuidv4 } from 'uuid';
 import { PrismaClient} from "@prisma/client";
 
 
+// Get a form owned by a signed in user
+export const GET = async (request: NextRequest) => {
+
+  const url = new URL(request.url);
+  const id = url.searchParams.get('id') || "";
+  
+  if (!id) {
+    return NextResponse.json({ 
+      error: {
+        message: "Missing formId"
+      }
+    }, { status: 400 });
+  }
+
+  // Retrieve form from database
+  try {
+
+    const db = new PrismaClient();
+  
+    const formResult = await db.forms.findFirst({
+      where: {
+        id: id
+      }
+    })
+
+    if (!formResult) {
+      return NextResponse.json({
+        error: {
+          mesage: "Form not found"
+        }
+      }, {status: 404})
+
+    }
+    const questions = await db.questions.findMany({
+        where: {
+          form_id: formResult.id
+        }
+      })
+
+    const form = {
+      ...formResult,
+      questions
+    }
+
+    return NextResponse.json({
+      success: {
+        mesage: "successful"
+      },
+      data: {form}
+    }, {status: 200})
+  }
+  catch (error) {
+    console.error(error)
+    return NextResponse.json({
+      error: {
+        message: "Unable to get forms. Please check back later."
+      }
+    }, {status: 500})
+  }
+}
+
 // Add a response entry
 export const PUT = async (request: NextRequest) => {
 
@@ -43,7 +104,7 @@ export const PUT = async (request: NextRequest) => {
         error: {
           mesage: "This form is currently not taking responses."
         }
-      }, {status: 404})
+      }, {status: 401})
     }
 
   //   const dbResponse = await db.$transaction( async (db) => {
