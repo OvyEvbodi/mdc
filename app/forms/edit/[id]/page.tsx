@@ -9,13 +9,14 @@ import FormEditor from '@/components/FormEditor';
 
 const EditFormPage = async (props: {params: Promise<{id: string}> }) => {
   const params = await props.params;
+  const URL = process.env.API_BASE_URL ?? "";
 
   const { id } = params;
   const cookieHeader = (await cookies()).toString(); 
   const session = await auth();
   if (!session) redirect("/");
     
-  const result = await fetch(`https://mdc-nu.vercel.app/api/forms/edit?id=${id}`, {
+  const result = await fetch(`${URL}/api/forms/edit?id=${id}`, {
     method: "GET",
     body: null,
     headers: {

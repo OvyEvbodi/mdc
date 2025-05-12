@@ -60,8 +60,9 @@ const ResponseForm = (form: MDCFormInterface) => {
   })
  
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    const URL = process.env.API_BASE_URL ?? "";
     console.log("submitted")
-    const result = await fetch(`https://mdc-nu.vercel.app/api/forms/responses?id=${form.id}`, {
+    const result = await fetch(`${URL}/api/forms/responses?id=${form.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

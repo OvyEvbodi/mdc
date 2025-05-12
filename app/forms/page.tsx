@@ -20,7 +20,7 @@ const FormsPage = async() => {
   const session = await auth();
   if (!session) redirect("/");
   
-  const result = await fetch("https://mdc-nu.vercel.app/api/forms", {
+  const result = await fetch(`${process.env.API_BASE_URL ?? ""}/api/forms`, {
     method: "GET",
     body: null,
     headers: {
