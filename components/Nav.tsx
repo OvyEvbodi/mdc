@@ -72,7 +72,9 @@ const NavHeader = ({ session }: {session: Session | null}) => {
   return (
     <header className="px-4 text-secondary font-medium flex flex-wrap justify-between items-center">
       <Image src="/mdc-logo.png" width={80} height={80} alt="MDC logo" />
-      <Nav />
+      {
+        session && <Nav />
+      }
       <UserNav session={session} />
     </header>
   )
