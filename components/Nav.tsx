@@ -31,9 +31,6 @@ const Nav = () => {
 		  		<Link href="/forms">Forms</Link>
 		  	</NavigationMenu.Item>
         <NavigationMenu.Item className="hover:text-primary hover:underline">
-		  		<Link href="/forms/responses">Responses</Link>
-		  	</NavigationMenu.Item>
-        <NavigationMenu.Item className="hover:text-primary hover:underline">
 		  		<Link href="/dashboard">Dashboard</Link>
 		  	</NavigationMenu.Item>
 		  </NavigationMenu.List>
@@ -47,7 +44,7 @@ const UserNav = ({ session }: {session: Session | null}) => {
     <section className="px-4 md:px-8">
       {
         session ? (
-          <div className="flex gap-2">
+          <div className="flex gap-2 justify-center items-center">
           {
             session.user?.image && (
               <Avatar>

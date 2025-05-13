@@ -251,7 +251,7 @@ export const PUT = async (request: NextRequest) => {
   const formId = url.searchParams.get('form-id') || "";
   const action = url.searchParams.get('action') || "";
   
-  if (!formId) {
+  if (action !== "add-form" && !formId) {
     return NextResponse.json({ 
       error: {
         message: "Missing formId"
@@ -271,7 +271,6 @@ export const PUT = async (request: NextRequest) => {
   }
   const userEmail = session.user?.email || "mdc-invalid";
 
-  const formEntry = await request.formData();
 
   // Retrieve user's forms from database
   try {
@@ -289,6 +288,40 @@ export const PUT = async (request: NextRequest) => {
         }
       }, {status: 401})
     }
+
+    if (action === "add-form") {
+
+      const id = uuidv4();
+      const responseValues = await request.json();
+      console.log(responseValues, id)
+      console.log("adding and returning")
+      const dbResponse = await db.forms.create({
+        data: {
+          id,
+          user_id: user.id,
+          name: responseValues.name,
+          description: responseValues.description,
+          published: responseValues.published === "true" ,
+          url: `forms/${id}`
+        }
+      })
+      
+      if (!dbResponse) {
+        return NextResponse.json({
+          error: {
+            message: "Unable to add form. Please try again."
+          }
+        }, {status: 500})
+      }
+      return NextResponse.json({
+        success: {
+          mesage: "successfully added!"
+        },
+        data: {user}
+      }, {status: 200})
+    }
+
+    const formEntry = await request.formData();
 
     const formResult = await db.forms.findFirst({
       where: {
@@ -350,23 +383,20 @@ export const PUT = async (request: NextRequest) => {
       }
 
       console.log(dbResponse)
-    } else if (action === "save-form") {
-      // save new form
-      // check for failure and return error
     }
     
     return NextResponse.json({
       success: {
-        mesage: "successfully deleted!"
+        mesage: "successfully added!"
       },
       data: {user}
-    }, {status: 201})
+    }, {status: 200})
   }
   catch (error) {
     console.error(error)
     return NextResponse.json({
       error: {
-        message: "Unable to get forms. Please check back later."
+        message: "Unable to add form or question. Please check back later."
       }
     }, {status: 500})
   }

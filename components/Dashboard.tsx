@@ -1,6 +1,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Session } from "next-auth";
+import ResponsesDashboard from "./ResponsesDashboard";
 
 
 const Dashboard = ({ session }: {session: Session | null}) => {
@@ -11,7 +12,9 @@ const Dashboard = ({ session }: {session: Session | null}) => {
           <TabsTrigger value="responses">responses</TabsTrigger>
           <TabsTrigger value="analytics">analytics</TabsTrigger>
         </TabsList>
-        <TabsContent value="responses">View form submissions here.</TabsContent>
+        <TabsContent value="responses">
+          <ResponsesDashboard />
+        </TabsContent>
         <TabsContent value="analytics"> your analytics will show up here.</TabsContent>
       </Tabs>
     </div>

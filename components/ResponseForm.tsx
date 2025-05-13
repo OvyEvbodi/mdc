@@ -17,10 +17,12 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useRouter } from "next/navigation";
 
 
 const ResponseForm = (form: MDCFormInterface) => {
 
+  const router = useRouter();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formSchemaObject:any = {};
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,7 +75,7 @@ const ResponseForm = (form: MDCFormInterface) => {
     if (result.status === 200)
     toast("Your response has been submitted!")
     // reroute to thank you page and render thank you msg
-    
+    router.push("/thanks")
     // console.log(result)
   }
   return (

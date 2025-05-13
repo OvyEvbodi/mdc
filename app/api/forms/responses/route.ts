@@ -1,13 +1,88 @@
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from 'uuid';
 import { PrismaClient} from "@prisma/client";
+import { auth } from "@/lib/auth";
 
 
-// Get a form owned by a signed in user
+// retrive a form for a response entry
 export const GET = async (request: NextRequest) => {
 
   const url = new URL(request.url);
   const id = url.searchParams.get('id') || "";
+  const action = url.searchParams.get('action') || "";
+
+  // if action is administrative, check auth
+  if (action === "admin") {
+    // auth
+    // Validate auth 
+      const session = await auth();
+    
+      if (!session) {
+        return NextResponse.json({
+          error: {
+            mesage: "You are not authorized to view this page"
+          }
+        }, {status: 401})
+      }
+      const userEmail = session.user?.email || "mdc-invalid";
+      try {
+
+        const db = new PrismaClient();
+        const user = await db.users.findFirst({
+          where: {
+            email: userEmail
+          }
+        })
+        if (!user) {
+          return NextResponse.json({
+            error: {
+              mesage: "Please sign up"
+            }
+          }, {status: 401})
+        }
+        const formResult = await db.forms.findFirst({
+          where: {
+            user_id: user.id,
+            id: id
+          }
+        })
+    
+        if (!formResult) {
+          return NextResponse.json({
+            error: {
+              mesage: "Form not found"
+            }
+          }, {status: 404})
+    
+        }
+        const responses = await db.responses.findMany({
+            where: {
+              form_id: formResult.id
+            }
+          })
+
+    
+        const formResponses = {
+          ...formResult,
+          responses
+        }
+    
+        return NextResponse.json({
+          success: {
+            mesage: "successful"
+          },
+          data: {formResponses, user}
+        }, {status: 200})
+      }
+      catch (error) {
+        console.error(error)
+        return NextResponse.json({
+          error: {
+            message: "Unable to get forms. Please check back later."
+          }
+        }, {status: 500})
+      }
+  }
   
   if (!id) {
     return NextResponse.json({ 
@@ -177,7 +252,8 @@ export const PUT = async (request: NextRequest) => {
             id: uuidv4(),
             response_id: responseId,
             question_id: questionsResult.id,
-            value: value as string
+            name: key as string,
+            value: value as string,
           }
         })
         console.log(answerRes)

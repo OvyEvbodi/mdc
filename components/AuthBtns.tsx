@@ -14,7 +14,7 @@ export const SignInBtn = () => {
       <button 
         onClick={() => signIn('google')}
         type="submit"
-        className="bg-blue-600 p-2 cursor-pointer"
+        className="bg-secondary text-secondary-foreground sm:px-6 rounded-sm p-2 cursor-pointer"
       >
         Sign in with Google
       </button>
@@ -33,7 +33,7 @@ export const SignOutBtn = () => {
       <button 
         onClick={() => signOut()}
         type="submit"
-        className="bg-blue-600 p-2 cursor-pointer"
+        className="bg-secondary text-secondary-foreground p-2 sm:px-6 rounded-sm cursor-pointer"
       >
         Sign Out
       </button>

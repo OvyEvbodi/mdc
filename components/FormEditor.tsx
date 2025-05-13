@@ -24,6 +24,28 @@ import { Label } from '@radix-ui/react-label';
 import { Input } from './ui/input';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
 
 
 const FormEditor = (formdata:FormResponse ) => {
@@ -33,6 +55,7 @@ const FormEditor = (formdata:FormResponse ) => {
   const [ newQuestionsList, setNewQuestionsList ] = useState<MDCQuestionChoice[]>([]);
   const questionTypes = ["input", "radio", "select", "checkbox"];
   const router = useRouter();
+  const URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://mdc-nu.vercel.app";
   
   const handleAddQuestionField = (type: string) => {
     const questionInitialData = {
@@ -55,7 +78,7 @@ const FormEditor = (formdata:FormResponse ) => {
   };
 
   const handleFormEdit: (prevState: FormResponse, formData: FormData) => Promise<FormResponse> = async (prevState: FormResponse, formData: FormData) => {
-    const URL = process.env.API_BASE_URL ?? "";
+    
       const result = await fetch(`${URL}/api/forms/edit?form-id=${formdata.data.form.id}&action=update-form`, {
         method: "PATCH",
         body: formData
@@ -78,7 +101,7 @@ const FormEditor = (formdata:FormResponse ) => {
     const [ state, action, isPending ] = useActionState(handleFormEdit, initialState);
     
     const handleCopyFormUrl = () => {
-      navigator.clipboard.writeText(formdata.data.form.url)
+      navigator.clipboard.writeText(`${URL}/${formdata.data.form.url}`)
       .then(() => toast("Form link copied to clipboard!")
     )
     };
@@ -146,7 +169,7 @@ const FormEditor = (formdata:FormResponse ) => {
                   <CardDescription>
                     <p>Description: {formdata.data.form.description}</p>
                     <p>Published: {JSON.stringify(formdata.data.form.published)}</p>
-                    <p>Response Link: {formdata.data.form.url}</p>
+                    <p>Response Link: {`${URL}/${formdata.data.form.url}`}</p>
                   </CardDescription>
                 </CardHeader>
               )
@@ -188,5 +211,138 @@ const FormEditor = (formdata:FormResponse ) => {
   )
 }
 
+export const NewForm = () => {
+  const router = useRouter();
+  const formSchemaObject = {
+    name: z.string({required_error:`Name is required.`}).min(3, `Form name cannot be less than 3 characters`),
+    description: z.string({required_error:`Name is required.`}).min(3, `Form name cannot be less than 3 characters`),
+    published: z.enum(["true", "false"]),
+  };
+  const formDefault = {
+    name: "",
+    description: "",
+    published: undefined
+  };
+  const formSchema = z.object(formSchemaObject)
+
+  const publicForm = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: formDefault
+  })
+ 
+  const handleAddNewForm = async(values: z.infer<typeof formSchema>) => {
+    
+    const URL = process.env.API_BASE_URL ?? "";
+    console.log("submitted")
+    const result = await fetch(`${URL}/api/forms/edit?action=add-form`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values)
+    })
+
+    if (result.status === 200)
+    toast("Form added. Please exit.")
+    router.refresh();
+    // // reroute to thank you page and render thank you msg
+    
+    console.log(values)
+  }
+
+  return (
+    <div className="mb-4">
+      <Dialog >
+        <DialogTrigger asChild>
+          <Button variant="secondary" className='cursor-pointer'>Add new form <Plus/> </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>New Form</DialogTitle>
+            <DialogDescription>
+              Add form metadata here. Click save when you&apos;re done, and head to the editing page to add questions.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...publicForm}>
+            <form onSubmit={publicForm.handleSubmit(handleAddNewForm)} className="space-y-8">
+              <FormField
+                control={publicForm.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Form Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      This is your public form name.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={publicForm.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Form description</FormLabel>
+                    <FormControl>
+                      <Input placeholder="" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      This is your public form description.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={publicForm.control}
+                name="published"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Form Status</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                      >
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="true" />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            yes
+                          </FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="false" />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            no
+                          </FormLabel>
+                        </FormItem>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormDescription>
+                      This is your publicity status.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <DialogFooter>
+                  <Button type="submit">Add Form</Button>
+                </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>  
+      </Dialog>
+    </div>
+  )
+};
 
 export default FormEditor
