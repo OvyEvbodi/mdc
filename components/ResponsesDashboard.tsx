@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/accordion";
 
 
-const ResponsesDashboard = ({props}: {props: any}) => {
+const ResponsesDashboard = () => {
 
   return (
     <div className="p-6 md:p-12">
