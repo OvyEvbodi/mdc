@@ -15,7 +15,7 @@ import { MDCQuestionChoice, MDCQuestionChoiceResponse } from "@/types/form"
 import { Button } from "@/components/ui/button";
 import { useActionState, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, SquareX, Trash2 } from "lucide-react";
+import { Edit, Pencil, SquareX, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,15 +28,25 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogDescription,
-//   DialogFooter,
-//   DialogHeader,
-//   DialogTitle,
-//   DialogTrigger,
-// } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 
 
 // Individual form fields
@@ -113,7 +123,6 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
     // else set error or sth
   };
 
-  const handleAddOption = async () => {};
 
   const handleQuestionEdit: (prevState: MDCQuestionChoiceResponse, formData: FormData) => Promise<MDCQuestionChoiceResponse> = async (prevState: MDCQuestionChoiceResponse, formData: FormData) => {
     const URL = process.env.API_BASE_URL ?? "";
@@ -258,7 +267,7 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
                     <span key={index}>{option}{props.options![props.options!.length-1] != option && ", "}</span>
                     ))
                   }
-                  <div onClick={handleAddOption} className="bg-primary text-primary-foreground p-1" >Add option</div>
+                  <NewOptions {...props} />
                 </div>
                 <input type="hidden" name="question_id" value={props.id} />
                 <input type="hidden" name="type" value={props.type} />
@@ -396,7 +405,7 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
         }
       </div>
     ),
-    check: () => (
+    checkbox: () => (
       <div>
         {
           editMode ? 
@@ -484,7 +493,7 @@ export const MDCFormEditField = (props: MDCQuestionChoice) => {
   }
 
 
-  return props.type && field[props.type as keyof typeof field]()
+  return field[props.type as keyof typeof field] && field[props.type as keyof typeof field]()
 }
 
 
@@ -504,6 +513,7 @@ export const MDCNewQuestionEditField = (props: MDCQuestionChoice) => {
       router.refresh();
     // else set error or sth
   };
+
 
   const handleQuestionSave: (prevState: MDCQuestionChoiceResponse, formData: FormData) => Promise<MDCQuestionChoiceResponse> = async (prevState: MDCQuestionChoiceResponse, formData: FormData) => {
     const URL = process.env.API_BASE_URL ?? "";
@@ -605,39 +615,371 @@ export const MDCNewQuestionEditField = (props: MDCQuestionChoice) => {
       </div>
     ),
     select: () => (
-      <div className="border boder-primary p-3 rounded-sm shadow inset-shadow-md">
-        <div>Title: {props.title}</div>
-        <div>Label:</div>
-        <div>Required:</div>
-        <div>Placeholder:</div>
-        <div>Options: loop</div>
+      <div>
+        {
+          editMode ? 
+          (
+            <div className="border space-y-4 boder-primary p-3 rounded-sm shadow inset-shadow-md">
+              {state.zodErrors && <p>{JSON.stringify(state.zodErrors)}</p>}
+              <form action={action} className=" space-y-3">
+                <Label htmlFor="" className="text-muted">Type: {props.type}</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="title">Title</Label>
+                  <Input className="" name="title" placeholder={props.title || "Enter title"} defaultValue={props.title} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="label">Label</Label>
+                  <Input className="" name="label" placeholder={props.label || "Enter label"} defaultValue={props.label} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="placeholder">Placeholder</Label>
+                  <Input className="" name="placeholder" placeholder={props.placeholder || "Enter placeholder"} defaultValue={props.placeholder} />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <Label htmlFor="required">Required</Label>
+                  <RadioGroup defaultValue={props.required} name="required">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="true" id={props.id} />
+                        <Label htmlFor="required">Yes</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="false" id={props.id} />
+                        <Label htmlFor="required">No</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+                <div>
+                  <span className="font-medium">Options: </span>
+                  {
+                    props.options && props.options.map((option, index) => (
+                    <span key={index}>{option}{props.options![props.options!.length-1] != option && ", "}</span>
+                    ))
+                  }
+                  <NewOptions {...props} />
+                </div>
+                <input type="hidden" name="question_id" value={props.id} />
+                <input type="hidden" name="type" value={props.type} />
+                <div className="flex justify-between items-center">
+                  <Button className="cursor-pointer" disabled={isPending}>Save</Button>
+                  <SquareX onClick={() => setEditMode(false)} strokeWidth={1.4} size={32} className="bg-destructive p-1 text-background rounded-sm" />
+                </div>
+              </form>
+            </div>
+          ) : 
+          (
+            <div className="border boder-primary p-3 rounded-sm shadow inset-shadow-md">
+              <div className="flex justify-between">
+                <Button onClick={()=> setEditMode(true)} className="cursor-pointer"><Pencil /></Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                  <Button variant={"destructive"} className="cursor-pointer"><Trash2 /></Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete {props.title}?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete the question and its response data from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteQuestion} >Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+              <div>
+                <div><span className="font-bold">Title: </span>{props.title}</div>
+                <div><span className="font-bold">Type: </span>{props.type}</div>
+                <div><span className="font-bold">Label: </span>{props.label}</div>
+                <div><span className="font-bold">Required: </span>{props.required}</div>
+                <div><span className="font-bold">Placeholder: </span>{props.placeholder}</div>
+                <div>
+                  <span className="font-bold">Options: </span>
+                  {
+                    props.options && props.options.map((option, index) => (
+                    <span key={index}>{option}{props.options![props.options!.length-1] != option && ", "}</span>
+                    ))
+                  }
+                </div>
+              </div>
+            </div>
+          )
+        }
       </div>
     ),
     radio: () => (
-      <div className="border boder-primary p-3 rounded-sm shadow inset-shadow-md">
-        <div>Title: {props.title}</div>
-        <div>Label:</div>
-        <div>Required:</div>
-        <div>Placeholder:</div>
-        <div>Options: loop</div>
+      <div>
+        {
+          editMode ? 
+          (
+            <div className="border space-y-4 boder-primary p-3 rounded-sm shadow inset-shadow-md">
+              {state.zodErrors && <p>{JSON.stringify(state.zodErrors)}</p>}
+              <form action={action} className=" space-y-3">
+                <Label htmlFor="" className="text-muted">Type: {props.type}</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="title">Title</Label>
+                  <Input className="" name="title" placeholder={props.title || "Enter title"} defaultValue={props.title} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="label">Label</Label>
+                  <Input className="" name="label" placeholder={props.label || "Enter label"} defaultValue={props.label} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="placeholder">Placeholder</Label>
+                  <Input className="" name="placeholder" placeholder={props.placeholder || "Enter placeholder"} defaultValue={props.placeholder} />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <Label htmlFor="required">Required</Label>
+                  <RadioGroup defaultValue={props.required} name="required">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="true" id={props.id} />
+                        <Label htmlFor="required">Yes</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="false" id={props.id} />
+                        <Label htmlFor="required">No</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+                <input type="hidden" name="question_id" value={props.id} />
+                <input type="hidden" name="type" value={props.type} />
+                <div className="flex justify-between items-center">
+                  <Button className="cursor-pointer" disabled={isPending}>Save</Button>
+                  <SquareX onClick={() => setEditMode(false)} strokeWidth={1.4} size={32} className="bg-destructive p-1 text-background rounded-sm" />
+                </div>
+              </form>
+            </div>
+          ) : 
+          (
+            <div className="border boder-primary p-3 rounded-sm shadow inset-shadow-md">
+              <div className="flex justify-between">
+                <Button onClick={()=> setEditMode(true)} className="cursor-pointer"><Pencil /></Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                  <Button variant={"destructive"} className="cursor-pointer"><Trash2 /></Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete {props.title}?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete the question and its response data from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteQuestion} >Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+              <div>
+                <div><span className="font-bold">Title: </span>{props.title}</div>
+                <div><span className="font-bold">Type: </span>{props.type}</div>
+                <div><span className="font-bold">Label: </span>{props.label}</div>
+                <div><span className="font-bold">Required: </span>{props.required}</div>
+                <div><span className="font-bold">Placeholder: </span>{props.placeholder}</div>
+                <div>
+                  <span className="font-bold">Options: </span>
+                  {
+                    props.options && props.options.map((option, index) => (
+                    <span key={index}>{option}{props.options![props.options!.length-1] != option && ", "}</span>
+                    ))
+                  }
+                </div>
+              </div>
+            </div>
+          )
+        }
       </div>
-
     ),
     checkbox: () => (
-      <div className="border boder-primary p-3 rounded-sm shadow inset-shadow-md">
-        <div>Title: {props.title}</div>
-        <div>Label:</div>
-        <div>Required:</div>
-        <div>Placeholder:</div>
-        <div>Options: loop</div>
+      <div>
+        {
+          editMode ? 
+          (
+            <div className="border space-y-4 boder-primary p-3 rounded-sm shadow inset-shadow-md">
+              {state.zodErrors && <p>{JSON.stringify(state.zodErrors)}</p>}
+              <form action={action} className=" space-y-3">
+                <Label htmlFor="" className="text-muted">Type: {props.type}</Label>
+                <div className="space-y-1">
+                  <Label htmlFor="title">Title</Label>
+                  <Input className="" name="title" placeholder={props.title || "Enter title"} defaultValue={props.title} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="label">Label</Label>
+                  <Input className="" name="label" placeholder={props.label || "Enter label"} defaultValue={props.label} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="placeholder">Placeholder</Label>
+                  <Input className="" name="placeholder" placeholder={props.placeholder || "Enter placeholder"} defaultValue={props.placeholder} />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <Label htmlFor="required">Required</Label>
+                  <RadioGroup defaultValue={props.required} name="required">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="true" id={props.id} />
+                        <Label htmlFor="required">Yes</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="false" id={props.id} />
+                        <Label htmlFor="required">No</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+                <input type="hidden" name="question_id" value={props.id} />
+                <input type="hidden" name="type" value={props.type} />
+                <div className="flex justify-between items-center">
+                  <Button className="cursor-pointer" disabled={isPending}>Save</Button>
+                  <SquareX onClick={() => setEditMode(false)} strokeWidth={1.4} size={32} className="bg-destructive p-1 text-background rounded-sm" />
+                </div>
+              </form>
+            </div>
+          ) : 
+          (
+            <div className="border boder-primary p-3 rounded-sm shadow inset-shadow-md">
+              <div className="flex justify-between">
+                <Button onClick={()=> setEditMode(true)} className="cursor-pointer"><Pencil /></Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                  <Button variant={"destructive"} className="cursor-pointer"><Trash2 /></Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete {props.title}?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete the question and its response data from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteQuestion} >Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+              <div>
+                <div><span className="font-bold">Title: </span>{props.title}</div>
+                <div><span className="font-bold">Type: </span>{props.type}</div>
+                <div><span className="font-bold">Label: </span>{props.label}</div>
+                <div><span className="font-bold">Required: </span>{props.required}</div>
+                <div><span className="font-bold">Placeholder: </span>{props.placeholder}</div>
+                <div>
+                  <span className="font-bold">Options: </span>
+                  {
+                    props.options && props.options.map((option, index) => (
+                    <span key={index}>{option}{props.options![props.options!.length-1] != option && ", "}</span>
+                    ))
+                  }
+                </div>
+              </div>
+            </div>
+          )
+        }
       </div>
     ),
   }
 
 
-  return props.type && field[props.type as keyof typeof field]()
+  return field[props.type as keyof typeof field] && field[props.type as keyof typeof field]()
 }
 
+// ----------------------------options edit--------------------------
 
+export const NewOptions = (props: MDCQuestionChoice) => {
+
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const formSchemaObject:any = {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const formDefault:any = {};
+
+  const newOptions =  props.options || [];
+  // newOptions.push("New Option")
+
+  newOptions.forEach(option => {
+    formDefault[option] = option;
+    formSchemaObject[option] = z.string({required_error:`Please enter a value!`})
+  })
+
+  const formSchema = z.object(formSchemaObject)
+
+  const publicForm = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: formDefault
+  })
+  
+  const handleEditOptions = async (values: z.infer<typeof formSchema>) => {
+      const URL = process.env.API_BASE_URL ?? "";
+
+      console.log("ops------------")
+      console.log(values)
+      console.log("submitted")
+      const result = await fetch(`${URL}/api/forms/edit?id=${props.id}&form-id=${props.form_id}&action=edit-options`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values)
+      })
+  
+      if (result.status === 200) {
+        toast("Options edited!")
+        setOpen(false)
+        router.refresh()
+      }
+      
+    }
+
+    // const handleAddOption = () => {
+    //   newOptions.push("option--")
+    // };
+
+
+  return (
+    <div className="mb-4">
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button variant="default" className='cursor-pointer w-full'>Edit options <Edit/> </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Options</DialogTitle>
+            <DialogDescription>
+              Edit question options here. Click save when you&apos;re done.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...publicForm}>
+            <form onSubmit={publicForm.handleSubmit(handleEditOptions)} className="space-y-8">
+              {
+                newOptions.map((option, index) => (
+                  <FormField
+                    key={index}
+                    control={publicForm.control}
+                    name={option}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="enter option" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))
+              }
+              {/* <div className="cursor-pointer" onClick={handleAddOption}>Add option</div> */}
+              <DialogFooter>
+                  <Button type="submit">Save Options</Button>
+                </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>  
+      </Dialog>
+    </div>
+  )
+};
 
 export default MDCFormField;

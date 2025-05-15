@@ -105,13 +105,42 @@ export const PATCH = async (request: NextRequest) => {
        }
      }, { status: 400 });
     }
-    
+
+    const db = new PrismaClient();
+
+    if (action === "edit-options") {
+      const newOptionsDict = await request.json();
+      const optionsList = Object.values(newOptionsDict);
+      console.log("values------>", optionsList)
+      
+      const dbResponse = await db.questions.update({
+        where: {
+          id: id,
+          form_id: formId
+        },
+        data: {
+          options: optionsList as string[]
+        }
+      })
+      if (!dbResponse) {
+        return NextResponse.json({
+          error: {
+            message: "Unable to edit options. Please try again."
+          }
+        }, {status: 500})
+      }
+      console.log("db patch------>", dbResponse)
+      return NextResponse.json({
+        error: {
+          message: "Successful."
+        }
+      }, {status: 200})
+    }
 
     const formEntry = await request.formData();
     console.log("ogayolooo", id, formEntry)
     
 
-    const db = new PrismaClient();
     if (action === "update-question") {
       const filledForm = {
         title: formEntry.get("title") as string || "",
@@ -198,34 +227,7 @@ export const PATCH = async (request: NextRequest) => {
       }
       console.log("db patch------>", dbResponse)
 
-    } else if (action === "update-options") {
-      // const filledForm = {
-      //   name: formEntry.get("name") as string || "",
-      //   description: formEntry.get("description") as string || "",
-      //   id: formId
-      //   // updated at??
-      // };
-      
-      // const dbResponse = await db.responses.update({
-      //   where: {
-      //     id: filledForm.id
-      //   },
-      //   data: {
-      //     name: filledForm.name,
-      //     description: filledForm.description,
-      //     // settings: for future updates
-      //   }
-      // })
-      // if (!dbResponse) {
-      //   return NextResponse.json({
-      //     error: {
-      //       message: "Unable to edit options. Please try again."
-      //     }
-      //   }, {status: 500})
-      // }
-      // console.log("db patch------>", dbResponse)
     }
-    
 
     return NextResponse.json({
       success: {

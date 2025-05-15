@@ -47,7 +47,6 @@ import {
 } from "@/components/ui/form";
 
 
-
 const FormEditor = (formdata:FormResponse ) => {
 
   const [ editMode, setEditMode ] = useState(false);
@@ -212,10 +211,11 @@ const FormEditor = (formdata:FormResponse ) => {
 }
 
 export const NewForm = () => {
+  const [open, setOpen] = useState(false);
   const router = useRouter();
   const formSchemaObject = {
     name: z.string({required_error:`Name is required.`}).min(3, `Form name cannot be less than 3 characters`),
-    description: z.string({required_error:`Name is required.`}).min(3, `Form name cannot be less than 3 characters`),
+    description: z.string({required_error:`Description is required.`}).min(10, `Form description cannot be less than 10 characters`),
     published: z.enum(["true", "false"]),
   };
   const formDefault = {
@@ -242,17 +242,18 @@ export const NewForm = () => {
       body: JSON.stringify(values)
     })
 
-    if (result.status === 200)
-    toast("Form added. Please exit.")
-    router.refresh();
-    // // reroute to thank you page and render thank you msg
+    if (result.status === 200) {
+      toast("Form added.")
+      setOpen(false);
+      router.refresh();
+    }
     
     console.log(values)
   }
 
   return (
     <div className="mb-4">
-      <Dialog >
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button variant="secondary" className='cursor-pointer'>Add new form <Plus/> </Button>
         </DialogTrigger>
@@ -314,7 +315,7 @@ export const NewForm = () => {
                             <RadioGroupItem value="true" />
                           </FormControl>
                           <FormLabel className="font-normal">
-                            yes
+                            Published
                           </FormLabel>
                         </FormItem>
                         <FormItem className="flex items-center space-x-3 space-y-0">
@@ -322,7 +323,7 @@ export const NewForm = () => {
                             <RadioGroupItem value="false" />
                           </FormControl>
                           <FormLabel className="font-normal">
-                            no
+                            Deactivated
                           </FormLabel>
                         </FormItem>
                       </RadioGroup>
